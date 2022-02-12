@@ -68,6 +68,8 @@ def ES_S02L1C(bandList: []):
 
 
 # Sentinel_5P
+S05P_STAMP = 'S05P'
+
 S05_BAND_CO = 'CO'
 S05_BAND_HCHO = 'HCHO'
 S05_BAND_NO2 = 'NO2'
@@ -123,6 +125,8 @@ function evaluatePixel(sample) {{
 
 
 # Landsat_8_OLI_Level-1
+LAN08OLIL1_STAMP = 'LAN08OLIL1'
+
 LAN08_OLI_L1_BAND_B01_ULTRA_BLUE = 'B01'
 LAN08_OLI_L1_BAND_B02_BLUE = 'B02'
 LAN08_OLI_L1_BAND_B03_GREEN = 'B03'
