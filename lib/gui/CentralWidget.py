@@ -235,29 +235,35 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         # ----- QDoubleSpinBox ----- #
         # -------------------------- #
         self.doubleSpinBox_Resolution = QDoubleSpinBox()
+        self.doubleSpinBox_Resolution.setSuffix(' m')
         self.doubleSpinBox_Resolution.setDecimals(2)
         self.doubleSpinBox_Resolution.setSingleStep(0.05)
         self.doubleSpinBox_Resolution.setMaximumWidth(80)
+        self.doubleSpinBox_Resolution.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MinLongitude = QDoubleSpinBox()
         self.doubleSpinBox_MinLongitude.setDecimals(2)
         self.doubleSpinBox_MinLongitude.setSingleStep(0.05)
         self.doubleSpinBox_MinLongitude.setMaximumWidth(80)
+        self.doubleSpinBox_MinLongitude.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MinLatitude = QDoubleSpinBox()
         self.doubleSpinBox_MinLatitude.setDecimals(2)
         self.doubleSpinBox_MinLatitude.setSingleStep(0.05)
         self.doubleSpinBox_MinLatitude.setMaximumWidth(80)
+        self.doubleSpinBox_MinLatitude.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MaxLongitude = QDoubleSpinBox()
         self.doubleSpinBox_MinLongitude.setDecimals(2)
         self.doubleSpinBox_MaxLongitude.setSingleStep(0.05)
         self.doubleSpinBox_MaxLongitude.setMaximumWidth(80)
+        self.doubleSpinBox_MaxLongitude.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MaxLatitude = QDoubleSpinBox()
         self.doubleSpinBox_MaxLatitude.setDecimals(2)
         self.doubleSpinBox_MaxLatitude.setSingleStep(0.05)
         self.doubleSpinBox_MaxLatitude.setMaximumWidth(80)
+        self.doubleSpinBox_MaxLatitude.setAlignment(Qt.AlignCenter)
 
         # --------------------- #
         # ----- QLineEdit ----- #
@@ -282,100 +288,197 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self.restoreDefaultValues()
         self.setEvents_()
 
-        labelEmpty = QLabel('')
-        labelEmpty.setMinimumWidth(20)
-
+        # Label Start Date
         label_StartDate = QLabel('<b>Start Date:<\\b>')
         label_StartDate.setMinimumWidth(160)
         label_StartDate.setMaximumWidth(160)
         label_StartDate.setAlignment(Qt.AlignCenter)
 
+        # Label Start Year
         label_StartYear = QLabel('Start Year:')
         label_StartYear.setMinimumWidth(80)
         label_StartYear.setMaximumWidth(80)
 
+        # Label Start Month
         label_StartMonth = QLabel('Start Month:')
         label_StartMonth.setMinimumWidth(80)
         label_StartMonth.setMaximumWidth(80)
 
+        # Label Start Day
         label_StartDay = QLabel('Start Day:')
         label_StartDay.setMinimumWidth(80)
         label_StartDay.setMaximumWidth(80)
 
+        # Label End Date
         label_EndDate = QLabel('<b>End Date:<\\b>')
         label_EndDate.setMinimumWidth(160)
         label_EndDate.setMaximumWidth(160)
         label_EndDate.setAlignment(Qt.AlignCenter)
 
+        # Label End Year
         label_EndYear = QLabel('End Year:')
         label_EndYear.setMinimumWidth(80)
         label_EndYear.setMaximumWidth(80)
 
+        # Label End Month
         label_EndMonth = QLabel('End Month:')
         label_EndMonth.setMinimumWidth(80)
         label_EndMonth.setMaximumWidth(80)
 
+        # Label End Day
         label_EndDay = QLabel('End Day:')
         label_EndDay.setMinimumWidth(80)
         label_EndDay.setMaximumWidth(80)
 
-        label_ChunkSize = QLabel('Chunk Size:')
+        # Label Chunk Size
+        label_ChunkSize = QLabel('<b>Chunk Size:<\\b>')
         label_ChunkSize.setMinimumWidth(80)
         label_ChunkSize.setMinimumWidth(80)
 
-        label_Resolution = QLabel('Resolution (meters):')
+        # Label Resolution
+        label_Resolution = QLabel('<b>Resolution:<\\b>')
+        label_Resolution.setMinimumWidth(80)
+        label_Resolution.setMinimumWidth(80)
+
+        # Label Bounding Box
+        label_Set_Bounding_Box = QLabel('<b>Set Bounding Box (WGS84 - EPSG:4386):<\\b>')
+        label_Set_Bounding_Box.setAlignment(Qt.AlignCenter)
+        label_Set_Bounding_Box.setMinimumWidth(180)
+        label_Set_Bounding_Box.setMaximumWidth(420)
+
+        # Label Minimum Longitude
         label_MinLongitude = QLabel('Minimum Longitude:')
-        label_MinLongitude = QLabel('Minimum Latitude:')
-        label_MaxLongitude = QLabel('Maximum Longitude:')
-        label_MaxLongitude = QLabel('Maximum Latitude:')
+        label_MinLongitude.setMinimumWidth(130)
+        label_MinLongitude.setMinimumWidth(130)
 
+        # Label Minimum Latitude
+        label_MinLatitude = QLabel('Minimum Latitude:')
+        label_MinLatitude.setMinimumWidth(130)
+        label_MinLatitude.setMinimumWidth(130)
+
+        # Label Maximum Longitude
+        label_MaxLongitude = QLabel('Maximum Longitude:')
+        label_MaxLongitude.setMinimumWidth(130)
+        label_MaxLongitude.setMinimumWidth(130)
+
+        # Label Maximum Latitude
+        label_MaxLatitude = QLabel('Maximum Latitude:')
+        label_MaxLatitude.setMinimumWidth(130)
+        label_MaxLatitude.setMinimumWidth(130)
+
+        # Start Year
         hbox_StartYear = QHBoxLayout()
         hbox_StartYear.addWidget(label_StartYear)
         hbox_StartYear.addWidget(self.spinBox_StartYear)
 
+        # Start Month
         hbox_StartMonth = QHBoxLayout()
         hbox_StartMonth.addWidget(label_StartMonth)
         hbox_StartMonth.addWidget(self.spinBox_StartMonth)
 
+        # Start Day
         hbox_StartDay = QHBoxLayout()
         hbox_StartDay.addWidget(label_StartDay)
         hbox_StartDay.addWidget(self.spinBox_StartDay)
 
+        # Start Date
         vbox_StartDate = QVBoxLayout()
         vbox_StartDate.addWidget(label_StartDate)
         vbox_StartDate.addLayout(hbox_StartYear)
         vbox_StartDate.addLayout(hbox_StartMonth)
         vbox_StartDate.addLayout(hbox_StartDay)
 
+        # End Year
         hbox_EndYear = QHBoxLayout()
         hbox_EndYear.addWidget(label_EndYear)
         hbox_EndYear.addWidget(self.spinBox_EndYear)
 
+        # End Month
         hbox_EndMonth = QHBoxLayout()
         hbox_EndMonth.addWidget(label_EndMonth)
         hbox_EndMonth.addWidget(self.spinBox_EndMonth)
 
+        # End Day
         hbox_EndDay = QHBoxLayout()
         hbox_EndDay.addWidget(label_EndDay)
         hbox_EndDay.addWidget(self.spinBox_EndDay)
 
+        # End Date
         vbox_EndDate = QVBoxLayout()
         vbox_EndDate.addWidget(label_EndDate)
         vbox_EndDate.addLayout(hbox_EndYear)
         vbox_EndDate.addLayout(hbox_EndMonth)
         vbox_EndDate.addLayout(hbox_EndDay)
 
+        # Date Options
         hbox_DateOptions = QHBoxLayout()
         hbox_DateOptions.addLayout(vbox_StartDate)
-        hbox_DateOptions.addWidget(labelEmpty)
+        hbox_DateOptions.addWidget(QLabel('    '))
+        hbox_DateOptions.addWidget(QLabel('    '))
         hbox_DateOptions.addLayout(vbox_EndDate)
         hbox_DateOptions.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
+        # Chunk Size
         hbox_ChunkSize = QHBoxLayout()
         hbox_ChunkSize.addWidget(label_ChunkSize)
         hbox_ChunkSize.addWidget(self.spinBox_ChunkSize)
+        hbox_ChunkSize.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+
+        # Minimum Longitude
+        hbox_MinLongitude = QHBoxLayout()
+        hbox_MinLongitude.addWidget(label_MinLongitude)
+        hbox_MinLongitude.addWidget(self.doubleSpinBox_MinLongitude)
+
+        # Minimum Latitude
+        hbox_MinLatitude = QHBoxLayout()
+        hbox_MinLatitude.addWidget(label_MinLatitude)
+        hbox_MinLatitude.addWidget(self.doubleSpinBox_MinLatitude)
+
+        # Minimum Bound:
+        vbox_MinBound = QVBoxLayout()
+        vbox_MinBound.addLayout(hbox_MinLongitude)
+        vbox_MinBound.addLayout(hbox_MinLatitude)
+
+        # Maximum Longitude
+        hbox_MaxLongitude = QHBoxLayout()
+        hbox_MaxLongitude.addWidget(label_MaxLongitude)
+        hbox_MaxLongitude.addWidget(self.doubleSpinBox_MaxLongitude)
+
+        # Maximum Latitude
+        hbox_MaxLatitude = QHBoxLayout()
+        hbox_MaxLatitude.addWidget(label_MaxLatitude)
+        hbox_MaxLatitude.addWidget(self.doubleSpinBox_MaxLatitude)
+
+        # Maximum Bound:
+        vbox_MaxBound = QVBoxLayout()
+        vbox_MaxBound.addLayout(hbox_MaxLongitude)
+        vbox_MaxBound.addLayout(hbox_MaxLatitude)
+
+        # Bounding Box
+        hbox_BoundingBox = QHBoxLayout()
+        hbox_BoundingBox.addLayout(vbox_MinBound)
+        hbox_BoundingBox.addWidget(QLabel('    '))
+        hbox_BoundingBox.addLayout(vbox_MaxBound)
+        hbox_BoundingBox.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+
+        # Final Bounding Box
+        vbox_FinalBoundingBox = QVBoxLayout()
+        vbox_FinalBoundingBox.addWidget(label_Set_Bounding_Box)
+        vbox_FinalBoundingBox.addLayout(hbox_BoundingBox)
+
+        # Resolution
+        hbox_Resolution = QHBoxLayout()
+        hbox_Resolution.addWidget(label_Resolution)
+        hbox_Resolution.addWidget(self.doubleSpinBox_Resolution)
+        hbox_Resolution.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
         self.vbox_main_layout.addLayout(hbox_DateOptions)
+        self.vbox_main_layout.addWidget(QLabel(''))
+        self.vbox_main_layout.addLayout(hbox_ChunkSize)
+        self.vbox_main_layout.addWidget(QLabel(''))
+        self.vbox_main_layout.addLayout(vbox_FinalBoundingBox)
+        self.vbox_main_layout.addWidget(QLabel(''))
+        self.vbox_main_layout.addLayout(hbox_Resolution)
         self.vbox_main_layout.addSpacerItem(QSpacerItem(0, projFlags.INT_MAX_STRETCH))
 
     def restoreDefaultValues(self):
