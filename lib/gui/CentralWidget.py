@@ -362,12 +362,12 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         # Label Chunk Size
         label_ChunkSize = QLabel('<b>Chunk Size:<\\b>')
         label_ChunkSize.setMinimumWidth(80)
-        label_ChunkSize.setMinimumWidth(80)
+        label_ChunkSize.setMaximumWidth(80)
 
         # Label Resolution
         label_Resolution = QLabel('<b>Resolution:<\\b>')
         label_Resolution.setMinimumWidth(80)
-        label_Resolution.setMinimumWidth(80)
+        label_Resolution.setMaximumWidth(80)
 
         # Label Bounding Box
         label_Set_Bounding_Box = QLabel('<b>Set Bounding Box (WGS84 - EPSG:4386):<\\b>')
@@ -394,6 +394,16 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         label_MaxLatitude = QLabel('Maximum Latitude:')
         label_MaxLatitude.setMinimumWidth(130)
         label_MaxLatitude.setMinimumWidth(130)
+
+        # Label Satellite List
+        label_Satellite_List = QLabel('<b>Satellite List:<\\b>')
+        label_Satellite_List.setMinimumWidth(130)
+        label_Satellite_List.setMaximumWidth(130)
+
+        # Label Band List
+        label_Band_List = QLabel('<b>Band List:<\\b>')
+        label_Band_List.setMinimumWidth(130)
+        label_Band_List.setMaximumWidth(130)
 
         # Start Year
         hbox_StartYear = QHBoxLayout()
@@ -445,13 +455,13 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         hbox_DateOptions.addWidget(QLabel('    '))
         hbox_DateOptions.addWidget(QLabel('    '))
         hbox_DateOptions.addLayout(vbox_EndDate)
-        hbox_DateOptions.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        # hbox_DateOptions.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
         # Chunk Size
         hbox_ChunkSize = QHBoxLayout()
         hbox_ChunkSize.addWidget(label_ChunkSize)
         hbox_ChunkSize.addWidget(self.spinBox_ChunkSize)
-        hbox_ChunkSize.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        # hbox_ChunkSize.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
         # Minimum Longitude
         hbox_MinLongitude = QHBoxLayout()
@@ -488,7 +498,7 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         hbox_BoundingBox.addLayout(vbox_MinBound)
         hbox_BoundingBox.addWidget(QLabel('    '))
         hbox_BoundingBox.addLayout(vbox_MaxBound)
-        hbox_BoundingBox.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        # hbox_BoundingBox.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
         # Final Bounding Box
         vbox_FinalBoundingBox = QVBoxLayout()
@@ -499,23 +509,40 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         hbox_Resolution = QHBoxLayout()
         hbox_Resolution.addWidget(label_Resolution)
         hbox_Resolution.addWidget(self.doubleSpinBox_Resolution)
-        hbox_Resolution.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        # hbox_Resolution.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
         # Button
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_Config)
         hbox_Buttons.addWidget(self.button_RestoreDefault)
-        hbox_Buttons.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        # hbox_Buttons.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
         hbox_Buttons.addWidget(self.button_DownloadImages)
 
-        self.vbox_main_layout.addLayout(hbox_DateOptions)
-        self.vbox_main_layout.addWidget(QLabel(''))
-        self.vbox_main_layout.addLayout(hbox_ChunkSize)
-        self.vbox_main_layout.addWidget(QLabel(''))
-        self.vbox_main_layout.addLayout(vbox_FinalBoundingBox)
-        self.vbox_main_layout.addWidget(QLabel(''))
-        self.vbox_main_layout.addLayout(hbox_Resolution)
-        self.vbox_main_layout.addSpacerItem(QSpacerItem(0, projFlags.INT_MAX_STRETCH))
+        # ListsRightVbox
+        vbox_ListsRightVbox = QVBoxLayout()
+        vbox_ListsRightVbox.addWidget(label_Satellite_List)
+        vbox_ListsRightVbox.addWidget(self.listWidget_SatelliteList)
+        vbox_ListsRightVbox.addWidget(label_Band_List)
+        vbox_ListsRightVbox.addWidget(self.listWidget_BandList)
+
+        # LeftVBox
+        vbox_LeftVBox = QVBoxLayout()
+        vbox_LeftVBox.addLayout(hbox_DateOptions)
+        vbox_LeftVBox.addWidget(QLabel(''))
+        vbox_LeftVBox.addLayout(hbox_ChunkSize)
+        vbox_LeftVBox.addWidget(QLabel(''))
+        vbox_LeftVBox.addLayout(vbox_FinalBoundingBox)
+        vbox_LeftVBox.addWidget(QLabel(''))
+        vbox_LeftVBox.addLayout(hbox_Resolution)
+        vbox_LeftVBox.addSpacerItem(QSpacerItem(0, projFlags.INT_MAX_STRETCH))
+
+        # FinalHBox
+        hbox_FinalHBox = QHBoxLayout()
+        hbox_FinalHBox.addLayout(vbox_LeftVBox)
+        hbox_FinalHBox.addWidget(QLabel('    '))
+        hbox_FinalHBox.addLayout(vbox_ListsRightVbox)
+
+        self.vbox_main_layout.addLayout(hbox_FinalHBox)
         self.vbox_main_layout.addLayout(hbox_Buttons)
 
     def restoreDefaultValues(self):
