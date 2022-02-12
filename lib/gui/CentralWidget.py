@@ -16,7 +16,8 @@ from PySide2.QtWidgets import (
     QLabel,
     QSpacerItem,
     QSpinBox,
-    QDoubleSpinBox
+    QDoubleSpinBox,
+    QListWidget
 )
 from PySide2.QtGui import (
     QIcon
@@ -236,6 +237,7 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
         self.spinBox_ChunkSize = QSpinBox()
         self.spinBox_ChunkSize.setSingleStep(1)
+        self.spinBox_ChunkSize.setMinimum(1)
         self.spinBox_ChunkSize.setAlignment(Qt.AlignCenter)
         self.spinBox_ChunkSize.setMaximumWidth(80)
         self.spinBox_ChunkSize.setMinimumHeight(20)
@@ -248,43 +250,61 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self.doubleSpinBox_Resolution.setDecimals(2)
         self.doubleSpinBox_Resolution.setSingleStep(0.05)
         self.doubleSpinBox_Resolution.setMaximumWidth(80)
+        self.doubleSpinBox_Resolution.setMinimumHeight(20)
         self.doubleSpinBox_Resolution.setAlignment(Qt.AlignCenter)
-
-        self.doubleSpinBox_MinLongitude = QDoubleSpinBox()
-        self.doubleSpinBox_MinLongitude.setDecimals(2)
-        self.doubleSpinBox_MinLongitude.setSingleStep(0.05)
-        self.doubleSpinBox_MinLongitude.setMaximumWidth(80)
-        self.doubleSpinBox_MinLongitude.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MinLatitude = QDoubleSpinBox()
         self.doubleSpinBox_MinLatitude.setDecimals(2)
         self.doubleSpinBox_MinLatitude.setSingleStep(0.05)
         self.doubleSpinBox_MinLatitude.setMaximumWidth(80)
+        self.doubleSpinBox_MinLatitude.setMinimumHeight(20)
         self.doubleSpinBox_MinLatitude.setAlignment(Qt.AlignCenter)
 
-        self.doubleSpinBox_MaxLongitude = QDoubleSpinBox()
+        self.doubleSpinBox_MinLongitude = QDoubleSpinBox()
         self.doubleSpinBox_MinLongitude.setDecimals(2)
-        self.doubleSpinBox_MaxLongitude.setSingleStep(0.05)
-        self.doubleSpinBox_MaxLongitude.setMaximumWidth(80)
-        self.doubleSpinBox_MaxLongitude.setAlignment(Qt.AlignCenter)
+        self.doubleSpinBox_MinLongitude.setSingleStep(0.05)
+        self.doubleSpinBox_MinLongitude.setMaximumWidth(80)
+        self.doubleSpinBox_MinLongitude.setMinimumHeight(20)
+        self.doubleSpinBox_MinLongitude.setAlignment(Qt.AlignCenter)
 
         self.doubleSpinBox_MaxLatitude = QDoubleSpinBox()
         self.doubleSpinBox_MaxLatitude.setDecimals(2)
         self.doubleSpinBox_MaxLatitude.setSingleStep(0.05)
         self.doubleSpinBox_MaxLatitude.setMaximumWidth(80)
+        self.doubleSpinBox_MaxLatitude.setMinimumHeight(20)
         self.doubleSpinBox_MaxLatitude.setAlignment(Qt.AlignCenter)
 
-        # --------------------- #
-        # ----- QLineEdit ----- #
-        # --------------------- #
+        self.doubleSpinBox_MaxLongitude = QDoubleSpinBox()
+        self.doubleSpinBox_MinLongitude.setDecimals(2)
+        self.doubleSpinBox_MaxLongitude.setSingleStep(0.05)
+        self.doubleSpinBox_MaxLongitude.setMaximumWidth(80)
+        self.doubleSpinBox_MaxLongitude.setMinimumHeight(20)
+        self.doubleSpinBox_MaxLongitude.setAlignment(Qt.AlignCenter)
 
-        # --------------------- #
-        # ----- QComboBox ----- #
-        # --------------------- #
+        # ----------------------- #
+        # ----- QListWidget ----- #
+        # ----------------------- #
+        self.listWidget_SatelliteList = QListWidget()
+
+        self.listWidget_BandList = QListWidget()
 
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
+        self._DEFAULT_START_YEAR = projFlags.INT_START_YEAR_DEFAULT
+        self._DEFAULT_START_MONTH = projFlags.INT_START_MONTH_DEFAULT
+        self._DEFAULT_START_DAY = projFlags.INT_START_DAY_DEFAULT
+        self._DEFAULT_END_YEAR = projFlags.INT_END_YEAR_DEFAULT
+        self._DEFAULT_END_MONTH = projFlags.INT_END_MONTH_DEFAULT
+        self._DEFAULT_END_DAY = projFlags.INT_END_DAY_DEFAULT
+
+        self._DEFAULT_CHUNK_SIZE = projFlags.INT_CHUNK_SIZE_DEFAULT
+        self._DEFAULT_RESOLUTION = projFlags.FLOAT_RESOLUTION_DEFAULT
+
+        self._DEFAULT_MIN_LATITUDE = projFlags.FLOAT_MIN_LATITUDE_DEFAULT
+        self._DEFAULT_MIN_LONGITUDE = projFlags.FLOAT_MIN_LONGITUDE_DEFAULT
+        self._DEFAULT_MAX_LATITUDE = projFlags.FLOAT_MAX_LATITUDE_DEFAULT
+        self._DEFAULT_MAX_LONGITUDE = projFlags.FLOAT_MAX_LONGITUDE_DEFAULT
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -445,8 +465,8 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
         # Minimum Bound:
         vbox_MinBound = QVBoxLayout()
-        vbox_MinBound.addLayout(hbox_MinLongitude)
         vbox_MinBound.addLayout(hbox_MinLatitude)
+        vbox_MinBound.addLayout(hbox_MinLongitude)
 
         # Maximum Longitude
         hbox_MaxLongitude = QHBoxLayout()
@@ -460,8 +480,8 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
         # Maximum Bound:
         vbox_MaxBound = QVBoxLayout()
-        vbox_MaxBound.addLayout(hbox_MaxLongitude)
         vbox_MaxBound.addLayout(hbox_MaxLatitude)
+        vbox_MaxBound.addLayout(hbox_MaxLongitude)
 
         # Bounding Box
         hbox_BoundingBox = QHBoxLayout()
@@ -500,14 +520,61 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
     def restoreDefaultValues(self):
         # set default value
-        pass
+        self.spinBox_StartYear.setValue(self.getDefaultStartYear())
+        self.spinBox_StartMonth.setValue(self.getDefaultStartMonth())
+        self.spinBox_StartDay.setValue(self.getDefaultStartDay())
+        self.spinBox_EndYear.setValue(self.getDefaultEndYear())
+        self.spinBox_EndMonth.setValue(self.getDefaultEndMonth())
+        self.spinBox_EndDay.setValue(self.getDefaultEndDay())
+        self.spinBox_ChunkSize.setValue(self.getDefaultChunkSize())
+
+        self.doubleSpinBox_Resolution.setValue(self.getDefaultResolution())
+        self.doubleSpinBox_MinLatitude.setValue(self.getDefaultMinLatitude())
+        self.doubleSpinBox_MinLongitude.setValue(self.getDefaultMinLongitude())
+        self.doubleSpinBox_MaxLatitude.setValue(self.getDefaultMaxLatitude())
+        self.doubleSpinBox_MaxLongitude.setValue(self.getDefaultMaxLongitude())
 
     def setEvents_(self):
-        pass
+        self.button_RestoreDefault.clicked.connect(self.restoreDefaultValues)
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
     # ------------------------------ #
+    def getDefaultStartYear(self):
+        return self._DEFAULT_START_YEAR
+
+    def getDefaultStartMonth(self):
+        return self._DEFAULT_START_MONTH
+
+    def getDefaultStartDay(self):
+        return self._DEFAULT_START_DAY
+
+    def getDefaultEndYear(self):
+        return self._DEFAULT_END_YEAR
+
+    def getDefaultEndMonth(self):
+        return self._DEFAULT_END_MONTH
+
+    def getDefaultEndDay(self):
+        return self._DEFAULT_END_DAY
+
+    def getDefaultChunkSize(self):
+        return self._DEFAULT_CHUNK_SIZE
+
+    def getDefaultResolution(self):
+        return self._DEFAULT_RESOLUTION
+
+    def getDefaultMinLatitude(self):
+        return self._DEFAULT_MIN_LATITUDE
+
+    def getDefaultMinLongitude(self):
+        return self._DEFAULT_MIN_LONGITUDE
+
+    def getDefaultMaxLatitude(self):
+        return self._DEFAULT_MAX_LATITUDE
+
+    def getDefaultMaxLongitude(self):
+        return self._DEFAULT_MAX_LONGITUDE
 
 
 class WidgetTabStorageImageBackendProcessing(QWidget):

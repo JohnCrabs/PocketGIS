@@ -29,6 +29,23 @@ def getCurrentDay():
     return dt.datetime.now().day
 
 
+def getToday():
+    today = dt.datetime.today()
+    return today.strftime('%Y'), today.strftime('%m'), today.strftime('%d')
+
+
+def get_N_DaysBefore(n_days):
+    today = dt.datetime.today()
+    n_days_before = today - dt.timedelta(days=n_days)
+    return n_days_before.strftime('%Y'), n_days_before.strftime('%m'), n_days_before.strftime('%d')
+
+
+def get_N_DaysAfter(n_days):
+    today = dt.datetime.today()
+    n_days_after = today + dt.timedelta(days=n_days)
+    return n_days_after.strftime('%Y'), n_days_after.strftime('%m'), n_days_after.strftime('%d')
+
+
 def getCurrentDatetimeForPath():
     return dt.datetime.now().strftime("%d%m%Y_%H%M%S")
 
