@@ -197,39 +197,48 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self.spinBox_StartYear.setMaximum(file_manip.getCurrentYear())
         self.spinBox_StartYear.setAlignment(Qt.AlignCenter)
         self.spinBox_StartYear.setMaximumWidth(80)
+        self.spinBox_StartYear.setMinimumHeight(20)
 
         self.spinBox_StartMonth = QSpinBox()
         self.spinBox_StartMonth.setMinimum(1)
         self.spinBox_StartMonth.setMaximum(12)
         self.spinBox_StartMonth.setAlignment(Qt.AlignCenter)
         self.spinBox_StartMonth.setMaximumWidth(80)
+        self.spinBox_StartMonth.setMinimumHeight(20)
 
         self.spinBox_StartDay = QSpinBox()
         self.spinBox_StartDay.setMinimum(1)
         self.spinBox_StartDay.setMaximum(31)
         self.spinBox_StartDay.setAlignment(Qt.AlignCenter)
         self.spinBox_StartDay.setMaximumWidth(80)
+        self.spinBox_StartDay.setMinimumHeight(20)
 
         self.spinBox_EndYear = QSpinBox()
         self.spinBox_EndYear.setMinimum(1990)
         self.spinBox_EndYear.setMaximum(file_manip.getCurrentYear())
         self.spinBox_EndYear.setAlignment(Qt.AlignCenter)
         self.spinBox_EndYear.setMaximumWidth(80)
+        self.spinBox_EndYear.setMinimumHeight(20)
 
         self.spinBox_EndMonth = QSpinBox()
         self.spinBox_EndMonth.setMinimum(1)
         self.spinBox_EndMonth.setMaximum(12)
         self.spinBox_EndMonth.setAlignment(Qt.AlignCenter)
         self.spinBox_EndMonth.setMaximumWidth(80)
+        self.spinBox_EndMonth.setMinimumHeight(20)
 
         self.spinBox_EndDay = QSpinBox()
         self.spinBox_EndDay.setMinimum(1)
         self.spinBox_EndDay.setMaximum(31)
         self.spinBox_EndDay.setAlignment(Qt.AlignCenter)
         self.spinBox_EndDay.setMaximumWidth(80)
+        self.spinBox_EndDay.setMinimumHeight(20)
 
         self.spinBox_ChunkSize = QSpinBox()
         self.spinBox_ChunkSize.setSingleStep(1)
+        self.spinBox_ChunkSize.setAlignment(Qt.AlignCenter)
+        self.spinBox_ChunkSize.setMaximumWidth(80)
+        self.spinBox_ChunkSize.setMinimumHeight(20)
 
         # -------------------------- #
         # ----- QDoubleSpinBox ----- #
@@ -472,6 +481,13 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         hbox_Resolution.addWidget(self.doubleSpinBox_Resolution)
         hbox_Resolution.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
 
+        # Button
+        hbox_Buttons = QHBoxLayout()
+        hbox_Buttons.addWidget(self.button_Config)
+        hbox_Buttons.addWidget(self.button_RestoreDefault)
+        hbox_Buttons.addSpacerItem(QSpacerItem(projFlags.INT_MAX_STRETCH, 0))
+        hbox_Buttons.addWidget(self.button_DownloadImages)
+
         self.vbox_main_layout.addLayout(hbox_DateOptions)
         self.vbox_main_layout.addWidget(QLabel(''))
         self.vbox_main_layout.addLayout(hbox_ChunkSize)
@@ -480,6 +496,7 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self.vbox_main_layout.addWidget(QLabel(''))
         self.vbox_main_layout.addLayout(hbox_Resolution)
         self.vbox_main_layout.addSpacerItem(QSpacerItem(0, projFlags.INT_MAX_STRETCH))
+        self.vbox_main_layout.addLayout(hbox_Buttons)
 
     def restoreDefaultValues(self):
         # set default value
