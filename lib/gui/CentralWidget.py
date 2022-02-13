@@ -17,7 +17,8 @@ from PySide2.QtWidgets import (
     QSpacerItem,
     QSpinBox,
     QDoubleSpinBox,
-    QListWidget
+    QListWidget,
+    QListWidgetItem
 )
 from PySide2.QtGui import (
     QIcon
@@ -26,6 +27,8 @@ from PySide2.QtGui import (
 import lib.gui.commonFunctions as comFunc
 import lib.core.projectFlags as projFlags
 import lib.core.file_manipulation as file_manip
+import lib.core.SentinelHubDownloader as shd
+
 
 _PROJECT_FOLDER = os.path.normpath(os.path.realpath(__file__) + '/../../../')
 
@@ -68,6 +71,8 @@ class WidgetCentral(QWidget):
 
     def setWidget(self):
         # Set buttons in hbox
+        self.setActions_()
+
         self.tabWidgetGeneral.setWidget()
         self.tabWidgetMain.addTab(self.tabWidgetGeneral, 'General')
         self.tabDownloadFromSentinelHub.setWidget()
@@ -84,7 +89,45 @@ class WidgetCentral(QWidget):
     # ----- Actions ----- #
     # ------------------- #
     def setActions_(self):
-        pass
+        self.tabDownloadFromSentinelHub.button_DownloadImages.clicked.connect(self.setButtonDownloadImagesClicked)
+
+    def setButtonDownloadImagesClicked(self):
+        instanceID = self.tabDownloadFromSentinelHub.getValueInstanceID()
+        clientID = self.tabDownloadFromSentinelHub.getValueClientID()
+        clientSecret = self.tabDownloadFromSentinelHub.getValueClientSecret()
+
+        storagePath = self.tabWidgetGeneral.getCurrentStoragePath()
+        startYear = self.tabDownloadFromSentinelHub.getValueStartYear()
+        startMonth = self.tabDownloadFromSentinelHub.getValueStartMonth()
+        startDay = self.tabDownloadFromSentinelHub.getValueStartDay()
+        endYear = self.tabDownloadFromSentinelHub.getValueEndYear()
+        endMonth = self.tabDownloadFromSentinelHub.getValueEndMonth()
+        endDay = self.tabDownloadFromSentinelHub.getValueEndDay()
+        chunkSize = self.tabDownloadFromSentinelHub.getValueChunkSize()
+        minLatitude = self.tabDownloadFromSentinelHub.getValueMinLatitude()
+        minLongitude = self.tabDownloadFromSentinelHub.getValueMinLongitude()
+        maxLatitude = self.tabDownloadFromSentinelHub.getValueMaxLatitude()
+        maxLongitude = self.tabDownloadFromSentinelHub.getValueMaxLongitude()
+        resolution = self.tabDownloadFromSentinelHub.getValueResolution()
+
+        sentinelHubDownloader = shd.SentinelHubDownloader()
+        sentinelHubDownloader.setStoragePath(path=storagePath)
+        sentinelHubDownloader.setSentinelHubConfiguration(
+            instance_id=instanceID,
+            client_id=clientID,
+            client_secret=clientSecret
+        )
+        sentinelHubDownloader.setTimeSlots(
+            startYear=startYear, startMonth=startMonth, startDay=startDay,
+            endYear=endYear, endMonth=endMonth, endDay=endDay,
+            n_chunks=chunkSize
+        )
+        sentinelHubDownloader.setAreaOfInterest(
+            minLatitude=minLatitude, minLongitude=minLongitude,
+            maxLatitude=maxLatitude, maxLongitude=maxLongitude,
+            spatialResolution=resolution
+        )
+        sentinelHubDownloader.imgDownload()
 
 
 class WidgetTabGeneral(QWidget):
@@ -182,6 +225,11 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         # ----- Set Window ----- #
         # ---------------------- #
         self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
+
+        self.widgetConfig = WidgetConfig(w=428, h=256,
+                                         minW=428, minH=256,
+                                         maxW=428, maxH=256,
+                                         winTitle='Config', iconPath='')
 
         # ----------------------- #
         # ----- QPushButton ----- #
@@ -288,6 +336,8 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
         self.listWidget_BandList = QListWidget()
 
+        self.dict_SatelliteJSON = {}
+
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
@@ -306,6 +356,12 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self._DEFAULT_MAX_LATITUDE = projFlags.FLOAT_MAX_LATITUDE_DEFAULT
         self._DEFAULT_MAX_LONGITUDE = projFlags.FLOAT_MAX_LONGITUDE_DEFAULT
 
+        # --------------------------- #
+        # ----- Set CLass Flags ----- #
+        # --------------------------- #
+        self._FLAG_SATELLITE_LIST_KEY = 'satellite-key'
+        self._FLAG_BAND_LIST_KEY = 'band-key'
+
     # --------------------------- #
     # ----- Reuse Functions ----- #
     # --------------------------- #
@@ -316,6 +372,11 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         """
         self.restoreDefaultValues()
         self.setEvents_()
+
+        self.setSatelliteJSON()
+        self.setSatelliteList()
+
+        self.widgetConfig.setWidget()
 
         # Label Start Date
         label_StartDate = QLabel('<b>Start Date:<\\b>')
@@ -563,6 +624,67 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
     def setEvents_(self):
         self.button_RestoreDefault.clicked.connect(self.restoreDefaultValues)
+        self.button_Config.clicked.connect(self.setButtonConfigClicked)
+
+        self.listWidget_SatelliteList.currentItemChanged.connect(self.setBandList)
+        self.listWidget_SatelliteList.itemChanged.connect(self.setSatelliteItemChanged)
+
+        self.listWidget_BandList.itemChanged.connect(self.setBandItemChanged)
+
+    def setSatelliteJSON(self):
+        for _key_ in projFlags.DICT_SATELLITE.keys():
+            satListWidgetItem = QListWidgetItem(_key_)
+            satListWidgetItem.setFlags(satListWidgetItem.flags() | Qt.ItemIsUserCheckable)
+            satListWidgetItem.setCheckState(Qt.Unchecked)
+
+            self.dict_SatelliteJSON[_key_] = {
+                self._FLAG_SATELLITE_LIST_KEY: satListWidgetItem,
+                self._FLAG_BAND_LIST_KEY: []
+            }
+
+            for _band_ in projFlags.DICT_SATELLITE[_key_]:
+                bandListWidgetItem = QListWidgetItem(_band_)
+                bandListWidgetItem.setFlags(bandListWidgetItem.flags() | Qt.ItemIsUserCheckable)
+                bandListWidgetItem.setCheckState(Qt.Unchecked)
+                self.dict_SatelliteJSON[_key_][self._FLAG_BAND_LIST_KEY].append(bandListWidgetItem)
+
+    def setSatelliteList(self):
+        listSize = self.listWidget_SatelliteList.count()
+        for _index_ in range(0, listSize):
+            self.listWidget_SatelliteList.takeItem(0)
+        for _key_ in self.dict_SatelliteJSON.keys():
+            self.listWidget_SatelliteList.addItem(self.dict_SatelliteJSON[_key_][self._FLAG_SATELLITE_LIST_KEY])
+        self.listWidget_SatelliteList.setCurrentRow(0)
+
+    def setBandList(self):
+        listSize = self.listWidget_BandList.count()
+        for _index_ in range(0, listSize):
+            self.listWidget_BandList.takeItem(0)
+        _key_ = self.listWidget_SatelliteList.currentItem().text()
+        for _bandItem_ in self.dict_SatelliteJSON[_key_][self._FLAG_BAND_LIST_KEY]:
+            self.listWidget_BandList.addItem(_bandItem_)
+        self.setBandListItemsActive()
+
+    def setSatelliteItemChanged(self, item):
+        self.listWidget_SatelliteList.setCurrentItem(item)
+        self.setBandListItemsActive()
+
+    def setBandListItemsActive(self):
+        _key_ = self.listWidget_SatelliteList.currentItem().text()
+        _checkState_ = self.listWidget_SatelliteList.currentItem().checkState()
+        for _bandItem_ in self.dict_SatelliteJSON[_key_][self._FLAG_BAND_LIST_KEY]:
+            if _checkState_:
+                _bandItem_.setFlags(~Qt.ItemIsSelectable)
+            else:
+                _bandItem_.setFlags(Qt.ItemIsSelectable)
+
+    @staticmethod
+    def setBandItemChanged(item):
+        if item.checkState() == Qt.PartiallyChecked:
+            item.setCheckState(Qt.Checked)
+
+    def setButtonConfigClicked(self):
+        self.widgetConfig.show()
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
@@ -602,6 +724,54 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
     def getDefaultMaxLongitude(self):
         return self._DEFAULT_MAX_LONGITUDE
+
+    # ------------------- #
+    # ----- GETTERS ----- #
+    # ------------------- #
+    def getValueStartYear(self):
+        return self.spinBox_StartYear.value()
+
+    def getValueStartMonth(self):
+        return self.spinBox_StartMonth.value()
+
+    def getValueStartDay(self):
+        return self.spinBox_StartDay.value()
+
+    def getValueEndYear(self):
+        return self.spinBox_EndYear.value()
+
+    def getValueEndMonth(self):
+        return self.spinBox_EndMonth.value()
+
+    def getValueEndDay(self):
+        return self.spinBox_EndDay.value()
+
+    def getValueChunkSize(self):
+        return self.spinBox_ChunkSize.value()
+
+    def getValueResolution(self):
+        return self.doubleSpinBox_Resolution.value()
+
+    def getValueMinLatitude(self):
+        return self.doubleSpinBox_MinLatitude.value()
+
+    def getValueMinLongitude(self):
+        return self.doubleSpinBox_MinLongitude.value()
+
+    def getValueMaxLatitude(self):
+        return self.doubleSpinBox_MaxLatitude.value()
+
+    def getValueMaxLongitude(self):
+        return self.doubleSpinBox_MaxLongitude.value()
+
+    def getValueInstanceID(self):
+        return self.widgetConfig.getInstanceID()
+
+    def getValueClientID(self):
+        return self.widgetConfig.getClientID()
+
+    def getValueClientSecret(self):
+        return self.widgetConfig.getClientSecret()
 
 
 class WidgetTabStorageImageBackendProcessing(QWidget):
@@ -658,6 +828,135 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
     # ------------------------------ #
+
+
+class WidgetConfig(QWidget):
+    def __init__(self, w=512, h=512, minW=256, minH=256, maxW=512, maxH=512,
+                 winTitle='My Window', iconPath=''):
+        super().__init__()
+        # ---------------------- #
+        # ----- Set Window ----- #
+        # ---------------------- #
+        self.setWindowTitle(winTitle)  # Set Window Title
+        self.setWindowIcon(QIcon(iconPath))  # Set Window Icon
+        self.setGeometry(_INT_SCREEN_WIDTH / 4, _INT_SCREEN_HEIGHT / 4, w, h)  # Set Window Geometry
+        self.setMinimumWidth(minW)  # Set Window Minimum Width
+        self.setMinimumHeight(minH)  # Set Window Minimum Height
+        if maxW is not None:
+            self.setMaximumWidth(maxW)  # Set Window Maximum Width
+        if maxH is not None:
+            self.setMaximumHeight(maxH)  # Set Window Maximum Width
+
+        self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
+
+        # ------------------------- #
+        # ----- Set Variables ----- #
+        # ------------------------- #
+        self._Instance_ID = ''
+        self._Client_ID = ''
+        self._Client_Secret = ''
+
+        # ----------------------- #
+        # ----- QPushButton ----- #
+        # ----------------------- #
+        self.button_Ok = QPushButton('Ok')
+        self.button_Apply = QPushButton('Apply')
+        self.button_Apply.setEnabled(False)
+        self.button_Cancel = QPushButton('Cancel')
+
+        # --------------------- #
+        # ----- QLineEdit ----- #
+        # --------------------- #
+        self.lineEdit_Instance_ID = QLineEdit()
+        self.lineEdit_Instance_ID.setAlignment(Qt.AlignCenter)
+
+        self.lineEdit_Client_ID = QLineEdit()
+        self.lineEdit_Client_ID.setAlignment(Qt.AlignCenter)
+
+        self.lineEdit_Client_Secret = QLineEdit()
+        self.lineEdit_Client_Secret.setAlignment(Qt.AlignCenter)
+
+        # ------------------------------ #
+        # ----- Set Default Values ----- #
+        # ------------------------------ #
+
+    # --------------------------- #
+    # ----- Reuse Functions ----- #
+    # --------------------------- #
+    def setWidget(self):
+        """
+            A function to create the widget components into the main QWidget
+            :return: Nothing
+        """
+        self.setEvents_()
+
+        # Labels
+        label_Instance_ID = QLabel("<b>Instance ID:<\\b>")
+        label_Instance_ID.setMinimumWidth(100)
+        label_Client_ID = QLabel("<b>Client ID:<\\b>")
+        label_Client_ID.setMinimumWidth(100)
+        label_Client_Secret = QLabel("<b>Client Secret:<\\b>")
+        label_Client_Secret.setMinimumWidth(100)
+
+        # HBoxes
+        hbox_Instance_ID = QHBoxLayout()
+        hbox_Instance_ID.addWidget(label_Instance_ID)
+        hbox_Instance_ID.addWidget(self.lineEdit_Instance_ID)
+
+        hbox_Client_ID = QHBoxLayout()
+        hbox_Client_ID.addWidget(label_Client_ID)
+        hbox_Client_ID.addWidget(self.lineEdit_Client_ID)
+
+        hbox_Client_Secret = QHBoxLayout()
+        hbox_Client_Secret.addWidget(label_Client_Secret)
+        hbox_Client_Secret.addWidget(self.lineEdit_Client_Secret)
+
+        hbox_Buttons = QHBoxLayout()
+        hbox_Buttons.addWidget(self.button_Ok)
+        hbox_Buttons.addWidget(self.button_Apply)
+        hbox_Buttons.addWidget(self.button_Cancel)
+
+        self.vbox_main_layout.addLayout(hbox_Instance_ID)
+        self.vbox_main_layout.addLayout(hbox_Client_ID)
+        self.vbox_main_layout.addLayout(hbox_Client_Secret)
+        self.vbox_main_layout.addLayout(hbox_Buttons)
+
+    def setEvents_(self):
+        self.button_Ok.clicked.connect(self.setButtonOkClicked)
+        self.button_Apply.clicked.connect(self.setButtonApplyClicked)
+        self.button_Cancel.clicked.connect(self.setButtonCancelClicked)
+
+        self.lineEdit_Instance_ID.textChanged.connect(self.setTextChanged)
+        self.lineEdit_Client_ID.textChanged.connect(self.setTextChanged)
+        self.lineEdit_Client_Secret.textChanged.connect(self.setTextChanged)
+
+    def setButtonApplyClicked(self):
+        self._Instance_ID = self.lineEdit_Instance_ID.text()
+        self._Client_ID = self.lineEdit_Client_ID.text()
+        self._Client_Secret = self.lineEdit_Client_Secret.text()
+        self.button_Apply.setEnabled(False)
+
+    def setButtonOkClicked(self):
+        self.setButtonApplyClicked()
+        self.close()
+
+    def setButtonCancelClicked(self):
+        self.close()
+
+    def setTextChanged(self):
+        self.button_Apply.setEnabled(True)
+
+    def getInstanceID(self):
+        return self._Instance_ID
+
+    def getClientID(self):
+        return self._Client_ID
+
+    def getClientSecret(self):
+        return self._Client_Secret
+
+    def getCredentials(self):
+        return self._Instance_ID, self._Client_ID, self._Client_Secret
 
 
 # ******************************************************* #
