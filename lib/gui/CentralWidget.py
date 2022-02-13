@@ -110,6 +110,8 @@ class WidgetCentral(QWidget):
         maxLongitude = self.tabDownloadFromSentinelHub.getValueMaxLongitude()
         resolution = self.tabDownloadFromSentinelHub.getValueResolution()
 
+        listSelectedJSON = self.tabDownloadFromSentinelHub.getListSelectionJSON()
+
         sentinelHubDownloader = shd.SentinelHubDownloader()
         sentinelHubDownloader.setStoragePath(path=storagePath)
         sentinelHubDownloader.setSentinelHubConfiguration(
@@ -127,7 +129,8 @@ class WidgetCentral(QWidget):
             maxLatitude=maxLatitude, maxLongitude=maxLongitude,
             spatialResolution=resolution
         )
-        sentinelHubDownloader.imgDownload()
+
+        sentinelHubDownloader.imgDownload(listSelectedJSON)
 
 
 class WidgetTabGeneral(QWidget):
@@ -776,6 +779,16 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
 
     def getValueClientSecret(self):
         return self.widgetConfig.getClientSecret()
+
+    def getListSelectionJSON(self):
+        listSelectedJSON = {}
+        for _key_ in self.dict_SatelliteJSON.keys():
+            if self.dict_SatelliteJSON[_key_][self._FLAG_SATELLITE_LIST_KEY].checkState().__bool__():
+                listSelectedJSON[_key_] = []
+                for _band_ in self.dict_SatelliteJSON[_key_][self._FLAG_BAND_LIST_KEY]:
+                    if _band_.checkState().__bool__():
+                        listSelectedJSON[_key_].append(_band_.text().split(' - ')[0])
+        return listSelectedJSON
 
 
 class WidgetTabStorageImageBackendProcessing(QWidget):

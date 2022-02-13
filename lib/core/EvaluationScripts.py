@@ -1,4 +1,4 @@
-PKEY_SENTINEL_1_GRC = 'Sentinel-1_GRC'
+PKEY_SENTINEL_1_GRC = 'Sentinel-1-GRC'
 PKEY_SENTINEL_2_L1C = 'Sentinel-2-L1C'
 PKEY_SENTINEL_2_L2A = 'Sentinel-2-L2A'
 PKEY_SENTINEL_3_OLCI = 'Sentinel-3-OLCI'
@@ -40,6 +40,8 @@ TKEY_S05_BAND_CLOUD_BASE_HEIGHT = 'CLOUD_BASE_HEIGHT'
 TKEY_S05_BAND_CLOUD_TOP_HEIGHT = 'CLOUD_TOP_HEIGHT'
 TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS = 'CLOUD_OPTICAL_THICKNESS'
 TKEY_S05_BAND_CLOUD_FRACTION = 'CLOUD_FRACTION'
+
+
 
 CONST_EVALUATION_DICTIONARY = {
     PKEY_SENTINEL_1_GRC: {
@@ -123,6 +125,8 @@ CONST_EVALUATION_DICTIONARY = {
     }
 }
 
+# -------------------------------------------------------------------------------------------------------------------------------- #
+
 # Sentinel_2_L1C
 S02_L1C_STAMP = 'S02L1C'
 
@@ -191,6 +195,7 @@ def ES_S02L1C(bandList: []):
     }}
     """
 
+
 def ES_S05P(band: str = 'CO'):
     return \
         f""" //VERSION=3
@@ -211,6 +216,7 @@ function evaluatePixel(sample) {{
     return [sample.{band}];
 }}
 """
+
 
 # Sentinel_5P
 S05P_STAMP = 'S05P'

@@ -1,6 +1,8 @@
 import sentinelhub
 import datetime as dt
 
+import lib.core.EvaluationScripts as evalScript
+
 _KEY_INSTANCE_ID = 'instance-id'
 _KEY_CLIENT_ID = 'client-id'
 _KEY_CLIENT_SECRET = 'client-secret'
@@ -65,4 +67,5 @@ class SentinelHubDownloader:
         self._image_resolution = sentinelhub.bbox_to_dimensions(self._bbox_sh, resolution=self._spatial_resolution)
 
     def imgDownload(self, downloadJSON):
-        a = 1
+        for _key_ in downloadJSON.keys():
+            satellitePathName = evalScript.CONST_EVALUATION_DICTIONARY[_key_][evalScript.SKEY_PATH_NAME]
