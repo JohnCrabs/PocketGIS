@@ -1,3 +1,128 @@
+PKEY_SENTINEL_1_GRC = 'Sentinel-1_GRC'
+PKEY_SENTINEL_2_L1C = 'Sentinel-2-L1C'
+PKEY_SENTINEL_2_L2A = 'Sentinel-2-L2A'
+PKEY_SENTINEL_3_OLCI = 'Sentinel-3-OLCI'
+PKEY_SENTINEL_3_SLSTR = 'Sentinel-2-SLSTR'
+PKEY_SENTINEL_5P = 'Sentinel-5P'
+
+PKEY_LANDSAT_5 = 'Landsat-5'
+PKEY_LANDSAT_7 = 'Landsat-7'
+PKEY_LANDSAT_8 = 'Landsat-8'
+
+SKEY_PATH_NAME = 'path-name'
+SKEY_BANDS = 'bands'
+
+TKEY_S02_L1C_BAND_B01_COASTAL_AEROSOL = 'B01'
+TKEY_S02_L1C_BAND_B02_BLUE = 'B02'
+TKEY_S02_L1C_BAND_B03_GREEN = 'B03'
+TKEY_S02_L1C_BAND_B04_RED = 'B04'
+TKEY_S02_L1C_BAND_B05_VEGETATION_RED_EDGE_704 = 'B05'
+TKEY_S02_L1C_BAND_B06_VEGETATION_RED_EDGE_740 = 'B06'
+TKEY_S02_L1C_BAND_B07_VEGETATION_RED_EDGE_782 = 'B07'
+TKEY_S02_L1C_BAND_B08_NIR = 'B08'
+TKEY_S02_L1C_BAND_B08A_NARROW_NIR = 'B8A'
+TKEY_S02_L1C_BAND_B09_WATER_VAPOUR = 'B09'
+TKEY_S02_L1C_BAND_B10_SWIR_CIRRUS = 'B10'
+TKEY_S02_L1C_BAND_B11_SWIR_1613 = 'B11'
+TKEY_S02_L1C_BAND_B12_SWIR_2202 = 'B12'
+
+TKEY_S05_BAND_CO = 'CO'
+TKEY_S05_BAND_HCHO = 'HCHO'
+TKEY_S05_BAND_NO2 = 'NO2'
+TKEY_S05_BAND_O3 = 'O3'
+TKEY_S05_BAND_SO2 = 'SO2'
+TKEY_S05_BAND_CH4 = 'CH4'
+TKEY_S05_BAND_AER_AI_340_380 = 'AER_AI_340_380'
+TKEY_S05_BAND_AER_AI_354_388 = 'AER_AI_354_388'
+TKEY_S05_BAND_CLOUD_BASE_PRESSURE = 'CLOUD_BASE_PRESSURE'
+TKEY_S05_BAND_CLOUD_TOP_PRESSURE = 'CLOUD_TOP_PRESSURE'
+TKEY_S05_BAND_CLOUD_BASE_HEIGHT = 'CLOUD_BASE_HEIGHT'
+TKEY_S05_BAND_CLOUD_TOP_HEIGHT = 'CLOUD_TOP_HEIGHT'
+TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS = 'CLOUD_OPTICAL_THICKNESS'
+TKEY_S05_BAND_CLOUD_FRACTION = 'CLOUD_FRACTION'
+
+CONST_EVALUATION_DICTIONARY = {
+    PKEY_SENTINEL_1_GRC: {
+        SKEY_PATH_NAME: 'S01GRC',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_SENTINEL_2_L1C: {
+        SKEY_PATH_NAME: 'S02L1C',
+        SKEY_BANDS: {
+            TKEY_S02_L1C_BAND_B01_COASTAL_AEROSOL: 'Coastal Aerosol',
+            TKEY_S02_L1C_BAND_B02_BLUE: 'Blue',
+            TKEY_S02_L1C_BAND_B03_GREEN: 'Green',
+            TKEY_S02_L1C_BAND_B04_RED: 'Red',
+            TKEY_S02_L1C_BAND_B05_VEGETATION_RED_EDGE_704: 'Vegetation Red Edge (~704nm)',
+            TKEY_S02_L1C_BAND_B06_VEGETATION_RED_EDGE_740: 'Vegetation Red Edge (~740nm)',
+            TKEY_S02_L1C_BAND_B07_VEGETATION_RED_EDGE_782: 'Vegetation Red Edge (~780nm)',
+            TKEY_S02_L1C_BAND_B08_NIR: 'NIR',
+            TKEY_S02_L1C_BAND_B08A_NARROW_NIR: 'Narrow NIR',
+            TKEY_S02_L1C_BAND_B09_WATER_VAPOUR: 'Water Vapour',
+            TKEY_S02_L1C_BAND_B10_SWIR_CIRRUS: 'SWIR-Cirrus',
+            TKEY_S02_L1C_BAND_B11_SWIR_1613: 'SWIR (~1610nm)',
+            TKEY_S02_L1C_BAND_B12_SWIR_2202: 'SWIR (~2200nm)',
+        },
+    },
+    PKEY_SENTINEL_2_L2A: {
+        SKEY_PATH_NAME: 'S02L2A',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_SENTINEL_3_OLCI: {
+        SKEY_PATH_NAME: 'S03OLCI',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_SENTINEL_3_SLSTR: {
+        SKEY_PATH_NAME: 'S03SLSTR',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_SENTINEL_5P: {
+        SKEY_PATH_NAME: 'S05P',
+        SKEY_BANDS: {
+            TKEY_S05_BAND_CO: None,
+            TKEY_S05_BAND_HCHO: None,
+            TKEY_S05_BAND_NO2: None,
+            TKEY_S05_BAND_O3: None,
+            TKEY_S05_BAND_SO2: None,
+            TKEY_S05_BAND_CH4: None,
+            TKEY_S05_BAND_AER_AI_340_380: None,
+            TKEY_S05_BAND_AER_AI_354_388: None,
+            TKEY_S05_BAND_CLOUD_BASE_PRESSURE: None,
+            TKEY_S05_BAND_CLOUD_TOP_PRESSURE: None,
+            TKEY_S05_BAND_CLOUD_BASE_HEIGHT: None,
+            TKEY_S05_BAND_CLOUD_TOP_HEIGHT: None,
+            TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS: None,
+            TKEY_S05_BAND_CLOUD_FRACTION: None
+        },
+    },
+    PKEY_LANDSAT_5: {
+        SKEY_PATH_NAME: 'LAN05',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_LANDSAT_7: {
+        SKEY_PATH_NAME: 'LAN07',
+        SKEY_BANDS: {
+
+        },
+    },
+    PKEY_LANDSAT_8: {
+        SKEY_PATH_NAME: 'LAN08',
+        SKEY_BANDS: {
+
+        },
+    }
+}
+
 # Sentinel_2_L1C
 S02_L1C_STAMP = 'S02L1C'
 
@@ -66,6 +191,26 @@ def ES_S02L1C(bandList: []):
     }}
     """
 
+def ES_S05P(band: str = 'CO'):
+    return \
+        f""" //VERSION=3
+function setup() {{
+    return {{
+        input: [{{
+            bands: ["{band}"],
+            units: "DN"
+        }}],
+        output: {{
+            bands: 1,
+            sampleType: "FLOAT32"
+        }}
+    }};
+}}
+
+function evaluatePixel(sample) {{
+    return [sample.{band}];
+}}
+"""
 
 # Sentinel_5P
 S05P_STAMP = 'S05P'

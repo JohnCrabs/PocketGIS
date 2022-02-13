@@ -3,7 +3,7 @@ import logging
 import lib.core.SentinelHubAuth as sha
 
 import lib.core.file_manipulation as file_manip
-import lib.core.evaluationScripts as evalScr
+import lib.core.EvaluationScripts as evalScr
 
 import datetime as dt
 

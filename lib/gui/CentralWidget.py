@@ -28,7 +28,7 @@ import lib.gui.commonFunctions as comFunc
 import lib.core.projectFlags as projFlags
 import lib.core.file_manipulation as file_manip
 import lib.core.SentinelHubDownloader as shd
-
+import lib.core.EvaluationScripts as evalScript
 
 _PROJECT_FOLDER = os.path.normpath(os.path.realpath(__file__) + '/../../../')
 
@@ -632,7 +632,7 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
         self.listWidget_BandList.itemChanged.connect(self.setBandItemChanged)
 
     def setSatelliteJSON(self):
-        for _key_ in projFlags.DICT_SATELLITE.keys():
+        for _key_ in evalScript.CONST_EVALUATION_DICTIONARY.keys():
             satListWidgetItem = QListWidgetItem(_key_)
             satListWidgetItem.setFlags(satListWidgetItem.flags() | Qt.ItemIsUserCheckable)
             satListWidgetItem.setCheckState(Qt.Unchecked)
@@ -642,8 +642,12 @@ class WidgetTabDownloadFromSentinelHub(QWidget):
                 self._FLAG_BAND_LIST_KEY: []
             }
 
-            for _band_ in projFlags.DICT_SATELLITE[_key_]:
-                bandListWidgetItem = QListWidgetItem(_band_)
+            for _band_ in evalScript.CONST_EVALUATION_DICTIONARY[_key_][evalScript.SKEY_BANDS].keys():
+                bandName = evalScript.CONST_EVALUATION_DICTIONARY[_key_][evalScript.SKEY_BANDS][_band_]
+                listBandName = _band_
+                if bandName is not None:
+                    listBandName += ' - ' + bandName
+                bandListWidgetItem = QListWidgetItem(listBandName)
                 bandListWidgetItem.setFlags(bandListWidgetItem.flags() | Qt.ItemIsUserCheckable)
                 bandListWidgetItem.setCheckState(Qt.Unchecked)
                 self.dict_SatelliteJSON[_key_][self._FLAG_BAND_LIST_KEY].append(bandListWidgetItem)
