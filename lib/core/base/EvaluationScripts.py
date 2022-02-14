@@ -22,6 +22,7 @@ SKEY_PATH_NAME = 'path-name'
 SKEY_BANDS = 'bands'
 SKEY_REQUEST_SCRIPT = 'request-script'
 SKEY_REQUEST_VARIABLES = 'request-variables'
+SKEY_AVAILABLE_PROCESSES = 'available-processes'
 
 TKEY_S02_L1C_BAND_B01_COASTAL_AEROSOL = 'B01'
 TKEY_S02_L1C_BAND_B02_BLUE = 'B02'
@@ -51,6 +52,8 @@ TKEY_S05_BAND_CLOUD_BASE_HEIGHT = 'CLOUD_BASE_HEIGHT'
 TKEY_S05_BAND_CLOUD_TOP_HEIGHT = 'CLOUD_TOP_HEIGHT'
 TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS = 'CLOUD_OPTICAL_THICKNESS'
 TKEY_S05_BAND_CLOUD_FRACTION = 'CLOUD_FRACTION'
+
+TKEY_PROCESS_NDVI = 'NDVI'
 
 
 # =================================== #
@@ -199,6 +202,9 @@ def _func_LAN07_RequestScript(storage_folder, bbox, size, config, bandList):
 def _func_LAN08_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
+# ----- Available Processes ----- #
+def _process_calculate_NDVI(nir_band, red_band):
+    return (nir_band - red_band) / (nir_band + red_band)
 
 # =========================== #
 # ===== Main Dictionary ===== #
@@ -210,7 +216,10 @@ CONST_EVALUATION_DICTIONARY = {
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_SENTINEL_2_L1C: {
         SKEY_PATH_NAME: 'S02L1C',
@@ -229,28 +238,40 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S02_L1C_BAND_B11_SWIR_1613: 'SWIR (~1610nm)',
             TKEY_S02_L1C_BAND_B12_SWIR_2202: 'SWIR (~2200nm)',
         },
-        SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+            TKEY_PROCESS_NDVI: _process_calculate_NDVI
+        }
     },
     PKEY_SENTINEL_2_L2A: {
         SKEY_PATH_NAME: 'S02L2A',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_SENTINEL_3_OLCI: {
         SKEY_PATH_NAME: 'S03OLCI',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_SENTINEL_3_SLSTR: {
         SKEY_PATH_NAME: 'S03SLSTR',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_SENTINEL_5P: {
         SKEY_PATH_NAME: 'S05P',
@@ -270,28 +291,40 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS: None,
             TKEY_S05_BAND_CLOUD_FRACTION: None
         },
-        SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_LANDSAT_5: {
         SKEY_PATH_NAME: 'LAN05',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_LANDSAT_7: {
         SKEY_PATH_NAME: 'LAN07',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     },
     PKEY_LANDSAT_8: {
         SKEY_PATH_NAME: 'LAN08',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript,
+        SKEY_AVAILABLE_PROCESSES: {
+
+        }
     }
 }
 

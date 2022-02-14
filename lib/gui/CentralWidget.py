@@ -18,7 +18,7 @@ from PySide2.QtWidgets import (
     QSpinBox,
     QDoubleSpinBox,
     QListWidget,
-    QListWidgetItem
+    QListWidgetItem,
 )
 from PySide2.QtGui import (
     QIcon
@@ -141,6 +141,7 @@ class WidgetCentral(QWidget):
     def setButtonRefreshListImage_BackendProcessing(self):
         self.tabStorageImageBackendProcessing.setStoragePath(self.tabWidgetGeneral.getCurrentStoragePath())
         self.tabStorageImageBackendProcessing.setImageCollectionJSON()
+        self.tabStorageImageBackendProcessing.setGeoDatabaseProcessing()
 
     def setButtonRefreshListImage_Visualizing(self):
         self.tabStorageImageVisualizing.setStoragePath(self.tabWidgetGeneral.getCurrentStoragePath())
@@ -818,32 +819,30 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         # ----- QPushButton ----- #
         # ----------------------- #
         self.button_RefreshList = QPushButton('Refresh List')
+        self.button_Execute = QPushButton('Execute')
 
-        # -------------------- #
-        # ----- QSpinBox ----- #
-        # -------------------- #
+        # ----------------------- #
+        # ----- QListWidget ----- #
+        # ----------------------- #
 
-        # -------------------------- #
-        # ----- QDoubleSpinBox ----- #
-        # -------------------------- #
-
-        # --------------------- #
-        # ----- QLineEdit ----- #
-        # --------------------- #
-
-        # --------------------- #
-        # ----- QComboBox ----- #
-        # --------------------- #
+        self._listWidget_Dir = QListWidget()
+        self._listWidget_AvailableProcesses = QListWidget()
 
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
+
+        self._DKEY_PKEY_4_EVALUATION_DICT = 'pkey-for-evaluation-dict'
+        self._DKEY_DIR_ITEM = 'directory-item'
+        self._DKEY_PROCESS_ITEM = 'process-item'
 
         # ------------------------- #
         # ----- Set Variables ----- #
         # ------------------------- #
         self._storagePath = None
         self._geoProcessing = geoProc.GeotiffProcessing()
+        self._ImageCollectionJSON = {}
+        self._ProcessesJSON = {}
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -856,10 +855,23 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         self.restoreDefaultValues()
         self.setEvents_()
 
+        # Labels
+        label_Directories = QLabel('<b>Geo-Database Directories:<\\b>')
+        label_AvailableProcesses = QLabel('<b>Available Processes:<\\b>')
+
+        # List vbox
+        vbox_ListWidgets = QVBoxLayout()
+        vbox_ListWidgets.addWidget(label_Directories)
+        vbox_ListWidgets.addWidget(self._listWidget_Dir)
+        vbox_ListWidgets.addWidget(label_AvailableProcesses)
+        vbox_ListWidgets.addWidget(self._listWidget_AvailableProcesses)
+
         # Buttons
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_RefreshList)
+        hbox_Buttons.addWidget(self.button_Execute)
 
+        self.vbox_main_layout.addLayout(vbox_ListWidgets)
         self.vbox_main_layout.addLayout(hbox_Buttons)
 
     def restoreDefaultValues(self):
@@ -867,7 +879,7 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         pass
 
     def setEvents_(self):
-        pass
+        self._listWidget_Dir.currentRowChanged.connect(self.setProcessListWidget)
 
     def setStoragePath(self, path):
         self._storagePath = path
@@ -875,9 +887,35 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
 
     def setImageCollectionJSON(self):
         self._geoProcessing.createImageCollectionJSON()
+        self._ImageCollectionJSON = self._geoProcessing.getImageCollectionJSON()
 
-    def setGeoProcessing(self):
-        pass
+    def setGeoDatabaseProcessing(self):
+        self._listWidget_Dir.clear()
+        for _key_ in self._ImageCollectionJSON.keys():
+            dirWidgetItem = QListWidgetItem(_key_)
+            self._listWidget_Dir.addItem(dirWidgetItem)
+            self._ProcessesJSON[_key_] = {
+                self._DKEY_PKEY_4_EVALUATION_DICT: '',
+                self._DKEY_DIR_ITEM: dirWidgetItem,
+                self._DKEY_PROCESS_ITEM: []
+            }
+            for _sat_key_ in evalScript.CONST_EVALUATION_DICTIONARY.keys():
+                if _key_ == evalScript.CONST_EVALUATION_DICTIONARY[_sat_key_][evalScript.SKEY_PATH_NAME]:
+                    self._ProcessesJSON[_key_][self._DKEY_PKEY_4_EVALUATION_DICT] = _sat_key_
+                    for _process_ in evalScript.CONST_EVALUATION_DICTIONARY[_sat_key_][evalScript.SKEY_AVAILABLE_PROCESSES].keys():
+                        processWidgetItem = QListWidgetItem(_process_)
+                        processWidgetItem.setFlags(processWidgetItem.flags() | Qt.ItemIsUserCheckable)
+                        processWidgetItem.setCheckState(Qt.Unchecked)
+                        self._ProcessesJSON[_key_][self._DKEY_PROCESS_ITEM].append(processWidgetItem)
+        self._listWidget_Dir.setCurrentRow(0)
+
+    def setProcessListWidget(self, row):
+        _key_ = self._listWidget_Dir.item(row).text()
+        item_count = self._listWidget_AvailableProcesses.count()
+        for _ in range(0, item_count):
+            self._listWidget_AvailableProcesses.takeItem(0)
+        for _process_ in self._ProcessesJSON[_key_][self._DKEY_PROCESS_ITEM]:
+            self._listWidget_AvailableProcesses.addItem(_process_)
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
@@ -919,6 +957,7 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # ------------------------- #
         self._storagePath = None
         self._geoProcessing = geoProc.GeotiffProcessing()
+        self._ImageCollectionJSON = {}
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -950,6 +989,7 @@ class WidgetTabStorageImageVisualizing(QWidget):
 
     def setImageCollectionJSON(self):
         self._geoProcessing.createImageCollectionJSON()
+        self._ImageCollectionJSON = self._geoProcessing.getImageCollectionJSON()
 
     def setGeoProcessing(self):
         pass

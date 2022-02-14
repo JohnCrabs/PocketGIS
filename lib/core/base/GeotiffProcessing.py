@@ -2,6 +2,7 @@ import rasterio
 import lib.core.common.file_manipulation as file_manip
 import lib.core.common.projectFuctions as projFunc
 
+
 class GeotiffProcessing:
     def __init__(self):
         self._storagePath = ''
@@ -23,3 +24,5 @@ class GeotiffProcessing:
                     'metadata': metadata,
                 }
 
+    def getImageCollectionJSON(self):
+        return self._imageCollectionJSON
