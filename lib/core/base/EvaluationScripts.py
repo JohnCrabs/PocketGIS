@@ -172,7 +172,6 @@ def _func_S02_L1C_RequestScript(storage_folder, bandList, timeIntervalList, sh_b
             newImageName=newImageName)
 
 
-
 def _func_S02_L2A_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
@@ -211,10 +210,7 @@ CONST_EVALUATION_DICTIONARY = {
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript
     },
     PKEY_SENTINEL_2_L1C: {
         SKEY_PATH_NAME: 'S02L1C',
@@ -233,40 +229,28 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S02_L1C_BAND_B11_SWIR_1613: 'SWIR (~1610nm)',
             TKEY_S02_L1C_BAND_B12_SWIR_2202: 'SWIR (~2200nm)',
         },
-        SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript
     },
     PKEY_SENTINEL_2_L2A: {
         SKEY_PATH_NAME: 'S02L2A',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript
     },
     PKEY_SENTINEL_3_OLCI: {
         SKEY_PATH_NAME: 'S03OLCI',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript
     },
     PKEY_SENTINEL_3_SLSTR: {
         SKEY_PATH_NAME: 'S03SLSTR',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript
     },
     PKEY_SENTINEL_5P: {
         SKEY_PATH_NAME: 'S05P',
@@ -286,40 +270,28 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS: None,
             TKEY_S05_BAND_CLOUD_FRACTION: None
         },
-        SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript
     },
     PKEY_LANDSAT_5: {
         SKEY_PATH_NAME: 'LAN05',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript
     },
     PKEY_LANDSAT_7: {
         SKEY_PATH_NAME: 'LAN07',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript
     },
     PKEY_LANDSAT_8: {
         SKEY_PATH_NAME: 'LAN08',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript,
-        SKEY_REQUEST_VARIABLES: {
-
-        }
+        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript
     }
 }
 
