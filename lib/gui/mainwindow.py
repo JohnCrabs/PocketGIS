@@ -17,7 +17,7 @@ from PySide2.QtGui import (
 )
 
 from lib.gui.CentralWidget import WidgetCentral
-import lib.core.projectFlags as projFlags
+import lib.core.common.projectFlags as projFlags
 
 _STR_PROJECT_FOLDER = os.path.normpath(os.path.realpath(__file__) + '/../../../')
 

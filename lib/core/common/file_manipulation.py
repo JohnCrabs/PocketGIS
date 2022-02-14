@@ -149,6 +149,10 @@ def getColumnNames(path):
     return columns
 
 
+def importCSV(csv_path: str):
+    return pd.read_csv(csv_path)
+
+
 def exportCSV(csv_path: str, list_write: []):
     """
     A Function for writing CSV files.

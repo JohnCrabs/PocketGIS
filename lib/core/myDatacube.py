@@ -1,6 +1,6 @@
 import rasterio
-import lib.core.EvaluationScripts as evalScript
-import lib.core.file_manipulation as file_manip
+import lib.core.base.EvaluationScripts as evalScript
+import lib.core.common.file_manipulation as file_manip
 
 import earthpy.plot as ep
 

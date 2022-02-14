@@ -1,6 +1,6 @@
 import warnings
 
-import lib.core.file_manipulation as file_manip
+import lib.core.common.file_manipulation as file_manip
 from PySide2.QtCore import (
     QUrl
 )

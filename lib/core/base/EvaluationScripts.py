@@ -1,3 +1,8 @@
+import sentinelhub
+
+import lib.core.common.file_manipulation as file_manip
+import lib.core.common.projectFuctions as projFunc
+
 # =========================== #
 # ===== Dictionary Keys ===== #
 # =========================== #
@@ -16,6 +21,7 @@ PKEY_LANDSAT_8 = 'Landsat-8'
 SKEY_PATH_NAME = 'path-name'
 SKEY_BANDS = 'bands'
 SKEY_REQUEST_SCRIPT = 'request-script'
+SKEY_REQUEST_VARIABLES = 'request-variables'
 
 TKEY_S02_L1C_BAND_B01_COASTAL_AEROSOL = 'B01'
 TKEY_S02_L1C_BAND_B02_BLUE = 'B02'
@@ -57,8 +63,39 @@ def _func_S01_GRC_EvaluationScript():
     pass
 
 
-def _func_S02_L1C_EvaluationScript():
-    pass
+def _func_S02_L1C_EvaluationScript(bandList):
+    bands_str = ''
+    bands_sample_str = ''
+    for index in range(bandList.__len__()):
+        tmp_band_str = '"' + bandList[index] + '"'
+        tmp_sample_str = 'sample.' + bandList[index]
+
+        if index == 0:
+            bands_str += tmp_band_str
+            bands_sample_str += tmp_sample_str
+        else:
+            bands_str += ',' + tmp_band_str
+            bands_sample_str += ',' + tmp_sample_str
+
+    return \
+        f""" //VERSION=3
+        function setup() {{
+            return {{
+                input: [{{
+                    bands: [{bands_str}],
+                    units: "DN"
+                }}],
+                output: {{
+                    bands: {bandList.__len__()},
+                    sampleType: "INT16"
+                }}
+            }};
+        }}
+
+        function evaluatePixel(sample) {{
+            return [{bands_sample_str}];
+        }}
+        """
 
 
 def _func_S02_L2A_EvaluationScript():
@@ -90,39 +127,75 @@ def _func_LAN08_EvaluationScript():
 
 
 # ----- Request Script ----- #
-def _func_S01_GRC_RequestScript():
+def _func_S01_GRC_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_S02_L1C_RequestScript():
+def _func_S02_L1C_RequestScript(storage_folder, bandList, timeIntervalList, sh_bbox, bbox_list, size, config, ):
+    satelliteStampName = CONST_EVALUATION_DICTIONARY[PKEY_SENTINEL_2_L1C][SKEY_PATH_NAME]
+    bandSize = bandList.__len__()
+    data_folder = file_manip.normPath(storage_folder + '/' + satelliteStampName)
+    file_manip.checkAndCreateFolders(data_folder)
+    evalscript = _func_S02_L1C_EvaluationScript(bandList)
+
+    for _timeSlot_ in timeIntervalList:
+        request = sentinelhub.SentinelHubRequest(
+            data_folder=data_folder,
+            evalscript=evalscript,
+            input_data=[
+                sentinelhub.SentinelHubRequest.input_data(
+                    data_collection=sentinelhub.DataCollection.SENTINEL2_L1C,
+                    time_interval=_timeSlot_,
+                    mosaicking_order='leastCC'
+                )
+            ],
+            responses=[
+                sentinelhub.SentinelHubRequest.output_response('default', sentinelhub.MimeType.TIFF)
+            ],
+
+            bbox=sh_bbox,
+            size=size,
+            config=config
+        )
+        request.save_data()
+        newImageName = projFunc.createImagePathName(
+            satStamp=satelliteStampName,
+            bandNum=bandSize,
+            dataType='RAW',
+            timeIntervalList=_timeSlot_,
+            bboxList=bbox_list,
+            crs='WGS84',
+            size=size)
+        projFunc.correctSentinelHubResponce(
+            requestBaseDir=data_folder,
+            newImageName=newImageName)
+
+
+def _func_S02_L2A_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_S02_L2A_RequestScript():
+def _func_S03_OLCI_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_S03_OLCI_RequestScript():
+def _func_S03_SLSTR_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_S03_SLSTR_RequestScript():
+def _func_S05_P_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_S05_P_RequestScript():
+def _func_LAN05_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_LAN05_RequestScript():
+def _func_LAN07_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
-def _func_LAN07_RequestScript():
-    pass
-
-
-def _func_LAN08_RequestScript():
+def _func_LAN08_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
 
@@ -137,6 +210,9 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_SENTINEL_2_L1C: {
         SKEY_PATH_NAME: 'S02L1C',
@@ -156,6 +232,9 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S02_L1C_BAND_B12_SWIR_2202: 'SWIR (~2200nm)',
         },
         SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_SENTINEL_2_L2A: {
         SKEY_PATH_NAME: 'S02L2A',
@@ -163,6 +242,9 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_SENTINEL_3_OLCI: {
         SKEY_PATH_NAME: 'S03OLCI',
@@ -170,6 +252,9 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_SENTINEL_3_SLSTR: {
         SKEY_PATH_NAME: 'S03SLSTR',
@@ -177,6 +262,9 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_SENTINEL_5P: {
         SKEY_PATH_NAME: 'S05P',
@@ -197,6 +285,9 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S05_BAND_CLOUD_FRACTION: None
         },
         SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_LANDSAT_5: {
         SKEY_PATH_NAME: 'LAN05',
@@ -204,6 +295,9 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_LANDSAT_7: {
         SKEY_PATH_NAME: 'LAN07',
@@ -211,13 +305,19 @@ CONST_EVALUATION_DICTIONARY = {
 
         },
         SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     },
     PKEY_LANDSAT_8: {
         SKEY_PATH_NAME: 'LAN08',
         SKEY_BANDS: {
 
         },
-        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript
+        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript,
+        SKEY_REQUEST_VARIABLES: {
+
+        }
     }
 }
 
@@ -290,28 +390,6 @@ def ES_S02L1C(bandList: []):
         return [{bands_sample_str}];
     }}
     """
-
-
-def ES_S05P(band: str = 'CO'):
-    return \
-        f""" //VERSION=3
-function setup() {{
-    return {{
-        input: [{{
-            bands: ["{band}"],
-            units: "DN"
-        }}],
-        output: {{
-            bands: 1,
-            sampleType: "FLOAT32"
-        }}
-    }};
-}}
-
-function evaluatePixel(sample) {{
-    return [sample.{band}];
-}}
-"""
 
 
 # Sentinel_5P

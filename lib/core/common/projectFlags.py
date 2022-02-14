@@ -1,10 +1,10 @@
-import lib.core.EvaluationScripts as evalScript
-import lib.core.file_manipulation as file_manip
+import lib.core.base.EvaluationScripts as evalScript
+import lib.core.common.file_manipulation as file_manip
 
-_PROJECT_FOLDER = file_manip.normPath(file_manip.realPath(__file__) + '/../../../')
+PROJECT_FOLDER = file_manip.normPath(file_manip.realPath(__file__) + '/../../../../')
 
-ICON_CLOSE_PATH = _PROJECT_FOLDER + '/icon/exit_app_48x48.png'
-ICON_NAVIGATE_PATH = _PROJECT_FOLDER + '/icon/optionNavigate_128x128.png'
+ICON_CLOSE_PATH = PROJECT_FOLDER + '/icon/exit_app_48x48.png'
+ICON_NAVIGATE_PATH = PROJECT_FOLDER + '/icon/optionNavigate_128x128.png'
 
 STR_STORAGE_DEFAULT_PATH = file_manip.normPath(file_manip.PATH_DOCUMENTS + '/PocketGIS')
 STR_START_YEAR_DEFAULT, STR_START_MONTH_DEFAULT, STR_START_DAY_DEFAULT = file_manip.get_N_DaysBefore(n_days=7)
@@ -34,3 +34,18 @@ DICT_SATELLITE = {
 }
 
 INT_MAX_STRETCH = 100000  # Spacer Max Stretch
+
+DKEY_PATH_SATELLITE = 'satellite'
+DKEY_PATH_BANDS = 'bands'
+DKEY_PATH_DATA_TYPE = 'data-type'
+DKEY_PATH_DATE_START = 'date-start'
+DKEY_PATH_DATE_END = 'date-end'
+DKEY_PATH_CRS = 'crs'
+DKEY_PATH_LONGITUDE_MIN = 'longitude-min'
+DKEY_PATH_LONGITUDE_MAX = 'longitude-max'
+DKEY_PATH_LATITUDE_MIN = 'latitude-min'
+DKEY_PATH_LATITUDE_MAX = 'latitude-max'
+DKEY_PATH_PATH = 'path'
+DKEY_PATH_METADATA = 'metadata'
+DKEY_PATH_WIDTH = 'width'
+DKEY_PATH_HEIGHT = 'height'

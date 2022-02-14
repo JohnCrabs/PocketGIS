@@ -25,10 +25,10 @@ from PySide2.QtGui import (
 )
 
 import lib.gui.commonFunctions as comFunc
-import lib.core.projectFlags as projFlags
-import lib.core.file_manipulation as file_manip
-import lib.core.SentinelHubDownloader as shd
-import lib.core.EvaluationScripts as evalScript
+import lib.core.common.projectFlags as projFlags
+import lib.core.common.file_manipulation as file_manip
+import lib.core.base.SentinelHubDownloader as shd
+import lib.core.base.EvaluationScripts as evalScript
 
 _PROJECT_FOLDER = os.path.normpath(os.path.realpath(__file__) + '/../../../')
 
@@ -879,6 +879,7 @@ class WidgetConfig(QWidget):
         self.button_Ok = QPushButton('Ok')
         self.button_Apply = QPushButton('Apply')
         self.button_Apply.setEnabled(False)
+        self.button_ExportAsCSV = QPushButton('Export as CSV')
         self.button_Cancel = QPushButton('Cancel')
 
         # --------------------- #
@@ -896,6 +897,10 @@ class WidgetConfig(QWidget):
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
+        self._DEFAULT_CREDENTIALS_FILE_PATH = projFlags.PROJECT_FOLDER + 'config/config.csv'
+        self._DEFAULT_INSTANCE_ID_COLUMN = 'INSTANCE_ID'
+        self._DEFAULT_CLIENT_ID_COLUMN = 'CLIENT_ID'
+        self._DEFAULT_CLIENT_SECRET_COLUMN = 'CLIENT_SECRET'
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -906,6 +911,11 @@ class WidgetConfig(QWidget):
             :return: Nothing
         """
         self.setEvents_()
+        self.setSavedCredentials()
+
+        self.lineEdit_Instance_ID.setText(self._Instance_ID)
+        self.lineEdit_Client_ID.setText(self._Client_ID)
+        self.lineEdit_Client_Secret.setText(self._Client_Secret)
 
         # Labels
         label_Instance_ID = QLabel("<b>Instance ID:<\\b>")
@@ -931,6 +941,7 @@ class WidgetConfig(QWidget):
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_Ok)
         hbox_Buttons.addWidget(self.button_Apply)
+        hbox_Buttons.addWidget(self.button_ExportAsCSV)
         hbox_Buttons.addWidget(self.button_Cancel)
 
         self.vbox_main_layout.addLayout(hbox_Instance_ID)
@@ -941,17 +952,36 @@ class WidgetConfig(QWidget):
     def setEvents_(self):
         self.button_Ok.clicked.connect(self.setButtonOkClicked)
         self.button_Apply.clicked.connect(self.setButtonApplyClicked)
+        self.button_ExportAsCSV.clicked.connect(self.setButtonExportAsCSVClicked)
         self.button_Cancel.clicked.connect(self.setButtonCancelClicked)
 
         self.lineEdit_Instance_ID.textChanged.connect(self.setTextChanged)
         self.lineEdit_Client_ID.textChanged.connect(self.setTextChanged)
         self.lineEdit_Client_Secret.textChanged.connect(self.setTextChanged)
 
+    def setSavedCredentials(self):
+        if file_manip.checkPathExistence(self._DEFAULT_CREDENTIALS_FILE_PATH):
+            try:
+                csvFile = file_manip.importCSV(self._DEFAULT_CREDENTIALS_FILE_PATH)
+                self._Instance_ID = csvFile[self._DEFAULT_INSTANCE_ID_COLUMN].tolist()[0]
+                self._Client_ID = csvFile[self._DEFAULT_CLIENT_ID_COLUMN].tolist()[0]
+                self._Client_Secret = csvFile[self._DEFAULT_CLIENT_SECRET_COLUMN].tolist()[0]
+            except (KeyError, ValueError):
+                self._Instance_ID = ''
+                self._Client_ID = ''
+                self._Client_Secret = ''
+
     def setButtonApplyClicked(self):
         self._Instance_ID = self.lineEdit_Instance_ID.text()
         self._Client_ID = self.lineEdit_Client_ID.text()
         self._Client_Secret = self.lineEdit_Client_Secret.text()
         self.button_Apply.setEnabled(False)
+        self.button_ExportAsCSV.setEnabled(True)
+
+    def setButtonExportAsCSVClicked(self):
+        list_csv = [[self._DEFAULT_INSTANCE_ID_COLUMN, self._DEFAULT_CLIENT_ID_COLUMN, self._DEFAULT_CLIENT_SECRET_COLUMN],
+                    [self._Instance_ID, self._Client_ID, self._Client_Secret]]
+        file_manip.exportCSV(self._DEFAULT_CREDENTIALS_FILE_PATH, list_csv)
 
     def setButtonOkClicked(self):
         self.setButtonApplyClicked()
@@ -962,6 +992,7 @@ class WidgetConfig(QWidget):
 
     def setTextChanged(self):
         self.button_Apply.setEnabled(True)
+        self.button_ExportAsCSV.setEnabled(False)
 
     def getInstanceID(self):
         return self._Instance_ID

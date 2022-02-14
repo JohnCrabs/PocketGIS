@@ -1,7 +1,7 @@
 import sentinelhub
 import datetime as dt
 
-import lib.core.EvaluationScripts as evalScript
+import lib.core.base.EvaluationScripts as evalScript
 
 _KEY_INSTANCE_ID = 'instance-id'
 _KEY_CLIENT_ID = 'client-id'
@@ -11,11 +11,12 @@ _KEY_CLIENT_SECRET = 'client-secret'
 class SentinelHubDownloader:
     def __init__(self):
         self._storagePath = ''
-        self._sh_config = {
+        self._sh_config_credentials_list = {
             _KEY_INSTANCE_ID: '',
             _KEY_CLIENT_ID: '',
             _KEY_CLIENT_SECRET: ''
         }
+        self._sh_config = sentinelhub.SHConfig()
         self._timeSlots = []
 
         self._bbox_wgs84 = []
@@ -40,9 +41,16 @@ class SentinelHubDownloader:
                               “OAuth clients” frame where we can create a new OAuth client.
         :return: Nothing
         """
-        self._sh_config[_KEY_INSTANCE_ID] = instance_id
-        self._sh_config[_KEY_CLIENT_ID] = client_id
-        self._sh_config[_KEY_CLIENT_SECRET] = client_secret
+        self._sh_config_credentials_list[_KEY_INSTANCE_ID] = instance_id
+        self._sh_config_credentials_list[_KEY_CLIENT_ID] = client_id
+        self._sh_config_credentials_list[_KEY_CLIENT_SECRET] = client_secret
+
+        self._sh_config.instance_id = self._sh_config_credentials_list[_KEY_INSTANCE_ID]
+        self._sh_config.sh_client_id = self._sh_config_credentials_list[_KEY_CLIENT_ID]
+        self._sh_config.sh_client_secret = self._sh_config_credentials_list[_KEY_CLIENT_SECRET]
+
+    def _createSentinelHubConfig(self):
+        pass
 
     def setTimeSlots(self,
                      startYear: int, startMonth: int, startDay: int,
@@ -68,4 +76,12 @@ class SentinelHubDownloader:
 
     def imgDownload(self, downloadJSON):
         for _key_ in downloadJSON.keys():
-            satellitePathName = evalScript.CONST_EVALUATION_DICTIONARY[_key_][evalScript.SKEY_PATH_NAME]
+            evalScript.CONST_EVALUATION_DICTIONARY[_key_][evalScript.SKEY_REQUEST_SCRIPT](
+                storage_folder=self._storagePath,
+                bandList=downloadJSON[_key_],
+                timeIntervalList=self._timeSlots,
+                sh_bbox=self._bbox_sh,
+                bbox_list=self._bbox_wgs84,
+                size=self._image_resolution,
+                config=self._sh_config
+            )
