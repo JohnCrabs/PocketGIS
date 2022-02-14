@@ -1,3 +1,7 @@
+# =========================== #
+# ===== Dictionary Keys ===== #
+# =========================== #
+
 PKEY_SENTINEL_1_GRC = 'Sentinel-1-GRC'
 PKEY_SENTINEL_2_L1C = 'Sentinel-2-L1C'
 PKEY_SENTINEL_2_L2A = 'Sentinel-2-L2A'
@@ -11,6 +15,7 @@ PKEY_LANDSAT_8 = 'Landsat-8'
 
 SKEY_PATH_NAME = 'path-name'
 SKEY_BANDS = 'bands'
+SKEY_REQUEST_SCRIPT = 'request-script'
 
 TKEY_S02_L1C_BAND_B01_COASTAL_AEROSOL = 'B01'
 TKEY_S02_L1C_BAND_B02_BLUE = 'B02'
@@ -42,6 +47,88 @@ TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS = 'CLOUD_OPTICAL_THICKNESS'
 TKEY_S05_BAND_CLOUD_FRACTION = 'CLOUD_FRACTION'
 
 
+# =================================== #
+# ===== Dict Callable Functions ===== #
+# =================================== #
+
+# ----- Evaluation Script ----- #
+
+def _func_S01_GRC_EvaluationScript():
+    pass
+
+
+def _func_S02_L1C_EvaluationScript():
+    pass
+
+
+def _func_S02_L2A_EvaluationScript():
+    pass
+
+
+def _func_S03_OLCI_EvaluationScript():
+    pass
+
+
+def _func_S03_SLSTR_EvaluationScript():
+    pass
+
+
+def _func_S05_P_EvaluationScript():
+    pass
+
+
+def _func_LAN05_EvaluationScript():
+    pass
+
+
+def _func_LAN07_EvaluationScript():
+    pass
+
+
+def _func_LAN08_EvaluationScript():
+    pass
+
+
+# ----- Request Script ----- #
+def _func_S01_GRC_RequestScript():
+    pass
+
+
+def _func_S02_L1C_RequestScript():
+    pass
+
+
+def _func_S02_L2A_RequestScript():
+    pass
+
+
+def _func_S03_OLCI_RequestScript():
+    pass
+
+
+def _func_S03_SLSTR_RequestScript():
+    pass
+
+
+def _func_S05_P_RequestScript():
+    pass
+
+
+def _func_LAN05_RequestScript():
+    pass
+
+
+def _func_LAN07_RequestScript():
+    pass
+
+
+def _func_LAN08_RequestScript():
+    pass
+
+
+# =========================== #
+# ===== Main Dictionary ===== #
+# =========================== #
 
 CONST_EVALUATION_DICTIONARY = {
     PKEY_SENTINEL_1_GRC: {
@@ -49,6 +136,7 @@ CONST_EVALUATION_DICTIONARY = {
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_S01_GRC_RequestScript,
     },
     PKEY_SENTINEL_2_L1C: {
         SKEY_PATH_NAME: 'S02L1C',
@@ -67,24 +155,28 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S02_L1C_BAND_B11_SWIR_1613: 'SWIR (~1610nm)',
             TKEY_S02_L1C_BAND_B12_SWIR_2202: 'SWIR (~2200nm)',
         },
+        SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript,
     },
     PKEY_SENTINEL_2_L2A: {
         SKEY_PATH_NAME: 'S02L2A',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_S02_L2A_RequestScript,
     },
     PKEY_SENTINEL_3_OLCI: {
         SKEY_PATH_NAME: 'S03OLCI',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_S03_OLCI_RequestScript,
     },
     PKEY_SENTINEL_3_SLSTR: {
         SKEY_PATH_NAME: 'S03SLSTR',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_S03_SLSTR_RequestScript,
     },
     PKEY_SENTINEL_5P: {
         SKEY_PATH_NAME: 'S05P',
@@ -104,24 +196,28 @@ CONST_EVALUATION_DICTIONARY = {
             TKEY_S05_BAND_CLOUD_OPTICAL_THICKNESS: None,
             TKEY_S05_BAND_CLOUD_FRACTION: None
         },
+        SKEY_REQUEST_SCRIPT: _func_S05_P_RequestScript,
     },
     PKEY_LANDSAT_5: {
         SKEY_PATH_NAME: 'LAN05',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_LAN05_RequestScript,
     },
     PKEY_LANDSAT_7: {
         SKEY_PATH_NAME: 'LAN07',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_LAN07_RequestScript,
     },
     PKEY_LANDSAT_8: {
         SKEY_PATH_NAME: 'LAN08',
         SKEY_BANDS: {
 
         },
+        SKEY_REQUEST_SCRIPT: _func_LAN08_RequestScript
     }
 }
 

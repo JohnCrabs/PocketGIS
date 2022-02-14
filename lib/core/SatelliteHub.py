@@ -250,8 +250,8 @@ class SatelliteHub:
                                      timeIntervalList=timeIntervalSlot,
                                      bboxList=self._sh_wgs84,
                                      crs='WGS84')
-
             file_manip.checkAndCreateFolders(slotFolder)
+
             request = sentinelhub.SentinelHubRequest(
                 data_folder=slotFolder,
                 evalscript=evaluation_script,
@@ -269,6 +269,7 @@ class SatelliteHub:
                 size=self._image_size,
                 config=self.config()
             )
+
             print('Download image for time-range: {}'.format(timeRange))
             request.save_data()
             self._correctResponce(slotFolder, imgName)
