@@ -962,6 +962,7 @@ class WidgetConfig(QWidget):
     def setSavedCredentials(self):
         if file_manip.checkPathExistence(self._DEFAULT_CREDENTIALS_FILE_PATH):
             try:
+                file_manip.checkAndCreateFolders(self._DEFAULT_CREDENTIALS_FILE_PATH)
                 csvFile = file_manip.importCSV(self._DEFAULT_CREDENTIALS_FILE_PATH)
                 self._Instance_ID = csvFile[self._DEFAULT_INSTANCE_ID_COLUMN].tolist()[0]
                 self._Client_ID = csvFile[self._DEFAULT_CLIENT_ID_COLUMN].tolist()[0]
