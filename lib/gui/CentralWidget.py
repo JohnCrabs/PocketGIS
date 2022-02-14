@@ -880,6 +880,9 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
 
     def setEvents_(self):
         self._listWidget_Dir.currentRowChanged.connect(self.setProcessListWidget)
+        self._listWidget_AvailableProcesses.itemChanged.connect(self.setProcessListItemChanged)
+
+        self.button_Execute.clicked.connect(self.setButtonExecute)
 
     def setStoragePath(self, path):
         self._storagePath = path
@@ -916,6 +919,12 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
             self._listWidget_AvailableProcesses.takeItem(0)
         for _process_ in self._ProcessesJSON[_key_][self._DKEY_PROCESS_ITEM]:
             self._listWidget_AvailableProcesses.addItem(_process_)
+
+    def setProcessListItemChanged(self, item):
+        print(item.text() + ' changed')
+
+    def setButtonExecute(self):
+        print('execute')
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
