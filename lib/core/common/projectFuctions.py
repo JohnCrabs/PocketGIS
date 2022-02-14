@@ -15,8 +15,8 @@ def createImagePathName(satStamp, bandNum, dataType, timeIntervalList, bboxList,
     return imgName
 
 
-def readCubePathMetadata(path):
-    metadataList = file_manip.pathFileName(path).split('.')[0].split('_')
+def readCubePathMetadata(baseName):
+    metadataList = file_manip.pathFileName(baseName).split('.')[0].split('_')
     return {
         projFlags.DKEY_PATH_SATELLITE: metadataList[0],
         projFlags.DKEY_PATH_BANDS: metadataList[1].split('B')[1],
@@ -28,8 +28,8 @@ def readCubePathMetadata(path):
         projFlags.DKEY_PATH_LATITUDE_MAX: metadataList[5].split('LATS')[1].split('E')[1].replace('c', '.'),
         projFlags.DKEY_PATH_LONGITUDE_MIN: metadataList[6].split('LONS')[1].split('E')[0].replace('c', '.'),
         projFlags.DKEY_PATH_LONGITUDE_MAX: metadataList[6].split('LONS')[1].split('E')[1].replace('c', '.'),
-        projFlags.DKEY_PATH_WIDTH: metadataList[6].split('W')[1].split('H')[0],
-        projFlags.DKEY_PATH_HEIGHT: metadataList[6].split('W')[1].split('H')[1],
+        projFlags.DKEY_PATH_WIDTH: metadataList[7].split('W')[1].split('H')[0],
+        projFlags.DKEY_PATH_HEIGHT: metadataList[7].split('W')[1].split('H')[1],
     }
 
 

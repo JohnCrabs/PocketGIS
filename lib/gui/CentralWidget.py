@@ -29,6 +29,7 @@ import lib.core.common.projectFlags as projFlags
 import lib.core.common.file_manipulation as file_manip
 import lib.core.base.SentinelHubDownloader as shd
 import lib.core.base.EvaluationScripts as evalScript
+import lib.core.base.GeotiffProcessing as geoProc
 
 _PROJECT_FOLDER = os.path.normpath(os.path.realpath(__file__) + '/../../../')
 
@@ -68,6 +69,7 @@ class WidgetCentral(QWidget):
         self.tabWidgetGeneral = WidgetTabGeneral()
         self.tabDownloadFromSentinelHub = WidgetTabDownloadFromSentinelHub()
         self.tabStorageImageBackendProcessing = WidgetTabStorageImageBackendProcessing()
+        self.tabStorageImageVisualizing = WidgetTabStorageImageVisualizing()
 
     def setWidget(self):
         # Set buttons in hbox
@@ -79,6 +81,8 @@ class WidgetCentral(QWidget):
         self.tabWidgetMain.addTab(self.tabDownloadFromSentinelHub, 'Download From Sentinel-Hub')
         self.tabStorageImageBackendProcessing.setWidget()
         self.tabWidgetMain.addTab(self.tabStorageImageBackendProcessing, 'Storage Image Backend Processing')
+        self.tabStorageImageVisualizing.setWidget()
+        self.tabWidgetMain.addTab(self.tabStorageImageVisualizing, 'Image Visualizing')
 
         hbox_tab = QHBoxLayout()  # Create Horizontal Layout
         hbox_tab.addWidget(self.tabWidgetMain)
@@ -90,6 +94,8 @@ class WidgetCentral(QWidget):
     # ------------------- #
     def setActions_(self):
         self.tabDownloadFromSentinelHub.button_DownloadImages.clicked.connect(self.setButtonDownloadImagesClicked)
+        self.tabStorageImageBackendProcessing.button_RefreshList.clicked.connect(self.setButtonRefreshListImage_BackendProcessing)
+        self.tabStorageImageVisualizing.button_RefreshList.clicked.connect(self.setButtonRefreshListImage_Visualizing)
 
     def setButtonDownloadImagesClicked(self):
         instanceID = self.tabDownloadFromSentinelHub.getValueInstanceID()
@@ -104,10 +110,10 @@ class WidgetCentral(QWidget):
         endMonth = self.tabDownloadFromSentinelHub.getValueEndMonth()
         endDay = self.tabDownloadFromSentinelHub.getValueEndDay()
         chunkSize = self.tabDownloadFromSentinelHub.getValueChunkSize()
-        minLatitude = self.tabDownloadFromSentinelHub.getValueMinLatitude()
-        minLongitude = self.tabDownloadFromSentinelHub.getValueMinLongitude()
-        maxLatitude = self.tabDownloadFromSentinelHub.getValueMaxLatitude()
-        maxLongitude = self.tabDownloadFromSentinelHub.getValueMaxLongitude()
+        minLatitude = round(self.tabDownloadFromSentinelHub.getValueMinLatitude(), 2)
+        minLongitude = round(self.tabDownloadFromSentinelHub.getValueMinLongitude(), 2)
+        maxLatitude = round(self.tabDownloadFromSentinelHub.getValueMaxLatitude(), 2)
+        maxLongitude = round(self.tabDownloadFromSentinelHub.getValueMaxLongitude(), 2)
         resolution = self.tabDownloadFromSentinelHub.getValueResolution()
 
         listSelectedJSON = self.tabDownloadFromSentinelHub.getListSelectionJSON()
@@ -131,6 +137,14 @@ class WidgetCentral(QWidget):
         )
 
         sentinelHubDownloader.imgDownload(listSelectedJSON)
+
+    def setButtonRefreshListImage_BackendProcessing(self):
+        self.tabStorageImageBackendProcessing.setStoragePath(self.tabWidgetGeneral.getCurrentStoragePath())
+        self.tabStorageImageBackendProcessing.setImageCollectionJSON()
+
+    def setButtonRefreshListImage_Visualizing(self):
+        self.tabStorageImageVisualizing.setStoragePath(self.tabWidgetGeneral.getCurrentStoragePath())
+        self.tabStorageImageVisualizing.setImageCollectionJSON()
 
 
 class WidgetTabGeneral(QWidget):
@@ -803,6 +817,7 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         # ----------------------- #
         # ----- QPushButton ----- #
         # ----------------------- #
+        self.button_RefreshList = QPushButton('Refresh List')
 
         # -------------------- #
         # ----- QSpinBox ----- #
@@ -824,6 +839,12 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         # ----- Set Default Values ----- #
         # ------------------------------ #
 
+        # ------------------------- #
+        # ----- Set Variables ----- #
+        # ------------------------- #
+        self._storagePath = None
+        self._geoProcessing = geoProc.GeotiffProcessing()
+
     # --------------------------- #
     # ----- Reuse Functions ----- #
     # --------------------------- #
@@ -835,11 +856,102 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         self.restoreDefaultValues()
         self.setEvents_()
 
+        # Buttons
+        hbox_Buttons = QHBoxLayout()
+        hbox_Buttons.addWidget(self.button_RefreshList)
+
+        self.vbox_main_layout.addLayout(hbox_Buttons)
+
     def restoreDefaultValues(self):
         # set default value
         pass
 
     def setEvents_(self):
+        pass
+
+    def setStoragePath(self, path):
+        self._storagePath = path
+        self._geoProcessing.setStoragePath(self._storagePath)
+
+    def setImageCollectionJSON(self):
+        self._geoProcessing.createImageCollectionJSON()
+
+    def setGeoProcessing(self):
+        pass
+
+    # ------------------------------ #
+    # ----- GET DEFAULT VALUES ----- #
+    # ------------------------------ #
+
+
+class WidgetTabStorageImageVisualizing(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # ---------------------- #
+        # ----- Set Window ----- #
+        # ---------------------- #
+        self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
+
+        # ----------------------- #
+        # ----- QPushButton ----- #
+        # ----------------------- #
+        self.button_RefreshList = QPushButton('Refresh List')
+
+        # -------------------- #
+        # ----- QSpinBox ----- #
+        # -------------------- #
+
+        # -------------------------- #
+        # ----- QDoubleSpinBox ----- #
+        # -------------------------- #
+
+        # --------------------- #
+        # ----- QLineEdit ----- #
+        # --------------------- #
+
+        # --------------------- #
+        # ----- QComboBox ----- #
+        # --------------------- #
+
+        # ------------------------- #
+        # ----- Set Variables ----- #
+        # ------------------------- #
+        self._storagePath = None
+        self._geoProcessing = geoProc.GeotiffProcessing()
+
+    # --------------------------- #
+    # ----- Reuse Functions ----- #
+    # --------------------------- #
+    def setWidget(self):
+        """
+            A function to create the widget components into the main QWidget
+            :return: Nothing
+        """
+        self.restoreDefaultValues()
+        self.setEvents_()
+
+        # Buttons
+        hbox_Buttons = QHBoxLayout()
+        hbox_Buttons.addWidget(self.button_RefreshList)
+
+        self.vbox_main_layout.addLayout(hbox_Buttons)
+
+    def restoreDefaultValues(self):
+        # set default value
+        pass
+
+    def setEvents_(self):
+        pass
+
+    def setStoragePath(self, path):
+        self._storagePath = path
+        self._geoProcessing.setStoragePath(self._storagePath)
+
+    def setImageCollectionJSON(self):
+        self._geoProcessing.createImageCollectionJSON()
+
+    def setGeoProcessing(self):
         pass
 
     # ------------------------------ #
