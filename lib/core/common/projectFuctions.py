@@ -39,5 +39,5 @@ def correctSentinelHubResponce(requestBaseDir, newImageName):
         # Get only Sentinel Hub response:
         if 'response' in filePath:
             suffix = file_manip.pathFileSuffix(filePath)
-            file_manip.copyfile(filePath, filePath + '/../' + newImageName + suffix)
+            file_manip.copyfile(filePath, filePath + '/../../' + newImageName + suffix)
             file_manip.removeDirectoryAndItsFiles(filePath + '/../')

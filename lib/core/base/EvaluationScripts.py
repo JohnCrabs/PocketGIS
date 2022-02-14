@@ -139,6 +139,15 @@ def _func_S02_L1C_RequestScript(storage_folder, bandList, timeIntervalList, sh_b
     evalscript = _func_S02_L1C_EvaluationScript(bandList)
 
     for _timeSlot_ in timeIntervalList:
+        newImageName = projFunc.createImagePathName(
+            satStamp=satelliteStampName,
+            bandNum=bandSize,
+            dataType='RAW',
+            timeIntervalList=_timeSlot_,
+            bboxList=bbox_list,
+            crs='WGS84',
+            size=size)
+        print("Image: " + newImageName + " is downloading!")
         request = sentinelhub.SentinelHubRequest(
             data_folder=data_folder,
             evalscript=evalscript,
@@ -158,17 +167,10 @@ def _func_S02_L1C_RequestScript(storage_folder, bandList, timeIntervalList, sh_b
             config=config
         )
         request.save_data()
-        newImageName = projFunc.createImagePathName(
-            satStamp=satelliteStampName,
-            bandNum=bandSize,
-            dataType='RAW',
-            timeIntervalList=_timeSlot_,
-            bboxList=bbox_list,
-            crs='WGS84',
-            size=size)
         projFunc.correctSentinelHubResponce(
             requestBaseDir=data_folder,
             newImageName=newImageName)
+
 
 
 def _func_S02_L2A_RequestScript(storage_folder, bbox, size, config, bandList):

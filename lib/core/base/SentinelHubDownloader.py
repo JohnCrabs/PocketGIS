@@ -71,7 +71,7 @@ class SentinelHubDownloader:
         self._bbox_wgs84 = [minLatitude, minLongitude, maxLatitude, maxLongitude]
         self._spatial_resolution = spatialResolution
 
-        self._bbox_sh = sentinelhub.BBox(bbox=self._bbox_wgs84, crs=sentinelhub.CRS.WGS84)
+        self._bbox_sh = sentinelhub.BBox(bbox=[minLongitude, minLatitude, maxLongitude, maxLatitude], crs=sentinelhub.CRS.WGS84)
         self._image_resolution = sentinelhub.bbox_to_dimensions(self._bbox_sh, resolution=self._spatial_resolution)
 
     def imgDownload(self, downloadJSON):
