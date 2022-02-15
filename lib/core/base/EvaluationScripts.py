@@ -1,4 +1,6 @@
 import sentinelhub
+import rasterio
+import numpy as np
 
 import lib.core.common.file_manipulation as file_manip
 import lib.core.common.projectFuctions as projFunc
@@ -202,9 +204,35 @@ def _func_LAN07_RequestScript(storage_folder, bbox, size, config, bandList):
 def _func_LAN08_RequestScript(storage_folder, bbox, size, config, bandList):
     pass
 
+
+def _exportRasterioIMG(imgPath, img, profile):
+    with rasterio.open(imgPath, 'w', **profile) as dst:
+        dst.write_band(1, img.astype(rasterio.float32))
+
+
 # ----- Available Processes ----- #
-def _process_calculate_NDVI(nir_band, red_band):
-    return (nir_band - red_band) / (nir_band + red_band)
+def _process_calculate_and_export_NDVI(in_path, out_path, satellite_name):
+    if satellite_name == PKEY_SENTINEL_2_L1C or satellite_name == SKEY_PATH_NAME:
+        img = rasterio.open(in_path)
+        profile = img.profile
+
+        if profile['count'] != 13:
+            print('Error: Cannot calculate automatically NDVI from a Sentinel-2 image with band size != 13.')
+            return False
+
+        nir_band = np.float32(img.read(8))
+        red_band = np.float32(img.read(4))
+        ndvi = (nir_band - red_band) / (nir_band + red_band)
+        ndvi_profile = profile
+        ndvi_profile['count'] = 1
+        ndvi_profile['dtype'] = 'float32'
+
+        _exportRasterioIMG(out_path, ndvi, ndvi_profile)
+
+    else:
+        print('Cannot calculate NDVI with satellite:', satellite_name)
+
+    return True
 
 # =========================== #
 # ===== Main Dictionary ===== #
@@ -240,7 +268,7 @@ CONST_EVALUATION_DICTIONARY = {
         },
         SKEY_REQUEST_SCRIPT: _func_S02_L1C_RequestScript,
         SKEY_AVAILABLE_PROCESSES: {
-            TKEY_PROCESS_NDVI: _process_calculate_NDVI
+            TKEY_PROCESS_NDVI: _process_calculate_and_export_NDVI
         }
     },
     PKEY_SENTINEL_2_L2A: {

@@ -8,6 +8,9 @@ class GeotiffProcessing:
         self._storagePath = ''
         self._imageCollectionJSON = {}
 
+        self._DKEY_FULLPATH = 'full-path'
+        self._DKEY_METADATA = 'metadata'
+
     def setStoragePath(self, path: str):
         self._storagePath = path
 
@@ -20,9 +23,15 @@ class GeotiffProcessing:
                 fileName = file_manip.pathFileName(_file_)
                 metadata = projFunc.readCubePathMetadata(fileName)
                 self._imageCollectionJSON[_dir_][fileName] = {
-                    'full-path': file_manip.normPath(self._storagePath + '/' + _dir_ + '/' + fileName),
-                    'metadata': metadata,
+                    self._DKEY_FULLPATH: file_manip.normPath(self._storagePath + '/' + _dir_ + '/' + fileName),
+                    self._DKEY_METADATA: metadata,
                 }
 
     def getImageCollectionJSON(self):
         return self._imageCollectionJSON
+
+    def getKey_FullPath(self):
+        return self._DKEY_FULLPATH
+
+    def getKey_Metadata(self):
+        return self._DKEY_METADATA

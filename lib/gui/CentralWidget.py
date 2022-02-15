@@ -1,6 +1,7 @@
 import sys
 import os
 import tkinter as tk
+
 from PySide2.QtCore import (
     Qt
 )
@@ -26,6 +27,7 @@ from PySide2.QtGui import (
 
 import lib.gui.commonFunctions as comFunc
 import lib.core.common.projectFlags as projFlags
+import lib.core.common.projectFuctions as projFunc
 import lib.core.common.file_manipulation as file_manip
 import lib.core.base.SentinelHubDownloader as shd
 import lib.core.base.EvaluationScripts as evalScript
@@ -835,6 +837,7 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         self._DKEY_PKEY_4_EVALUATION_DICT = 'pkey-for-evaluation-dict'
         self._DKEY_DIR_ITEM = 'directory-item'
         self._DKEY_PROCESS_ITEM = 'process-item'
+        self._DKEY_SELECTED_PROCESSES = 'selected-processes'
 
         # ------------------------- #
         # ----- Set Variables ----- #
@@ -852,7 +855,6 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
             A function to create the widget components into the main QWidget
             :return: Nothing
         """
-        self.restoreDefaultValues()
         self.setEvents_()
 
         # Labels
@@ -873,10 +875,6 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
 
         self.vbox_main_layout.addLayout(vbox_ListWidgets)
         self.vbox_main_layout.addLayout(hbox_Buttons)
-
-    def restoreDefaultValues(self):
-        # set default value
-        pass
 
     def setEvents_(self):
         self._listWidget_Dir.currentRowChanged.connect(self.setProcessListWidget)
@@ -900,7 +898,9 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
             self._ProcessesJSON[_key_] = {
                 self._DKEY_PKEY_4_EVALUATION_DICT: '',
                 self._DKEY_DIR_ITEM: dirWidgetItem,
-                self._DKEY_PROCESS_ITEM: []
+                self._DKEY_PROCESS_ITEM: [],
+                self._DKEY_SELECTED_PROCESSES: []
+
             }
             for _sat_key_ in evalScript.CONST_EVALUATION_DICTIONARY.keys():
                 if _key_ == evalScript.CONST_EVALUATION_DICTIONARY[_sat_key_][evalScript.SKEY_PATH_NAME]:
@@ -921,10 +921,39 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
             self._listWidget_AvailableProcesses.addItem(_process_)
 
     def setProcessListItemChanged(self, item):
-        print(item.text() + ' changed')
+        _key_ = self._listWidget_Dir.currentItem().text()
+        if item.checkState().__bool__():
+            if item.text() not in self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES]:
+                self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES].append(item.text())
+        else:
+            if item.text() in self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES]:
+                self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES].remove(item.text())
 
     def setButtonExecute(self):
-        print('execute')
+        for _key_ in self._ProcessesJSON.keys():
+            _pkey_eval_ = self._ProcessesJSON[_key_][self._DKEY_PKEY_4_EVALUATION_DICT]
+            _imageCollection = self._geoProcessing.getImageCollectionJSON()
+            for _process_ in self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES]:
+                for _path_key_ in _imageCollection[_key_].keys():
+                    full_path = _imageCollection[_key_][_path_key_][self._geoProcessing.getKey_FullPath()]
+                    if 'RAW' in full_path:
+                        currentFileNameJSON = projFunc.readCubePathMetadata(_path_key_)
+                        currentFileNameJSON[projFlags.DKEY_PATH_BANDS] = 1
+                        currentFileNameJSON[projFlags.DKEY_PATH_DATA_TYPE] = _process_
+                        newFileName = projFunc.createImagePathName(
+                            satStamp=currentFileNameJSON[projFlags.DKEY_PATH_SATELLITE],
+                            bandNum=currentFileNameJSON[projFlags.DKEY_PATH_BANDS],
+                            dataType=currentFileNameJSON[projFlags.DKEY_PATH_DATA_TYPE],
+                            timeIntervalList=[currentFileNameJSON[projFlags.DKEY_PATH_DATE_START], currentFileNameJSON[projFlags.DKEY_PATH_DATE_END]],
+                            bboxList=[currentFileNameJSON[projFlags.DKEY_PATH_LATITUDE_MIN], currentFileNameJSON[projFlags.DKEY_PATH_LONGITUDE_MIN],
+                                      currentFileNameJSON[projFlags.DKEY_PATH_LATITUDE_MAX], currentFileNameJSON[projFlags.DKEY_PATH_LONGITUDE_MAX]],
+                            crs=currentFileNameJSON[projFlags.DKEY_PATH_CRS],
+                            size=[currentFileNameJSON[projFlags.DKEY_PATH_WIDTH], currentFileNameJSON[projFlags.DKEY_PATH_HEIGHT]]
+                        ) + file_manip.pathFileSuffix(full_path)
+
+                        o_full_path = file_manip.normPath(full_path + '/..') + newFileName
+
+                        evalScript.CONST_EVALUATION_DICTIONARY[_pkey_eval_][evalScript.SKEY_AVAILABLE_PROCESSES][_process_](full_path, o_full_path, _pkey_eval_)
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
