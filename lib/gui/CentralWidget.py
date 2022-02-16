@@ -985,9 +985,9 @@ class WidgetTabStorageImageVisualizing(QWidget):
         self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
 
         self._Widget_Filter = WidgetFilter(
-            w=512, h=512,
-            minW=256, minH=256,
-            maxW=512, maxH=512,
+            w=640, h=512,
+            minW=640, minH=512,
+            maxW=640, maxH=512,
             winTitle='Set Filter', iconPath='')
 
         self._Widget_ShowImage = WidgetShowImage(
@@ -1374,10 +1374,127 @@ class WidgetFilter(QWidget):
         # ----------------------- #
         # ----- QPushButton ----- #
         # ----------------------- #
+        self._button_Ok = QPushButton('Ok')
+        self._button_Apply = QPushButton('Apply')
+        self._button_Cancel = QPushButton('Cancel')
 
-        # --------------------- #
-        # ----- QLineEdit ----- #
-        # --------------------- #
+        # ----------------------- #
+        # ----- QListWidget ----- #
+        # ----------------------- #
+        self._listWidget_Type = QListWidget()
+        self._listWidget_Crs = QListWidget()
+
+        # -------------------- #
+        # ----- QSpinBox ----- #
+        # -------------------- #
+        self._spinBox_StartYear = QSpinBox()
+        self._spinBox_StartYear.setMinimum(1990)
+        self._spinBox_StartYear.setMaximum(file_manip.getCurrentYear())
+        self._spinBox_StartYear.setAlignment(Qt.AlignCenter)
+        self._spinBox_StartYear.setMaximumWidth(80)
+        self._spinBox_StartYear.setMinimumHeight(20)
+
+        self._spinBox_StartMonth = QSpinBox()
+        self._spinBox_StartMonth.setMinimum(1)
+        self._spinBox_StartMonth.setMaximum(12)
+        self._spinBox_StartMonth.setAlignment(Qt.AlignCenter)
+        self._spinBox_StartMonth.setMaximumWidth(80)
+        self._spinBox_StartMonth.setMinimumHeight(20)
+
+        self._spinBox_StartDay = QSpinBox()
+        self._spinBox_StartDay.setMinimum(1)
+        self._spinBox_StartDay.setMaximum(31)
+        self._spinBox_StartDay.setAlignment(Qt.AlignCenter)
+        self._spinBox_StartDay.setMaximumWidth(80)
+        self._spinBox_StartDay.setMinimumHeight(20)
+
+        self._spinBox_EndYear = QSpinBox()
+        self._spinBox_EndYear.setMinimum(1990)
+        self._spinBox_EndYear.setMaximum(file_manip.getCurrentYear())
+        self._spinBox_EndYear.setAlignment(Qt.AlignCenter)
+        self._spinBox_EndYear.setMaximumWidth(80)
+        self._spinBox_EndYear.setMinimumHeight(20)
+
+        self._spinBox_EndMonth = QSpinBox()
+        self._spinBox_EndMonth.setMinimum(1)
+        self._spinBox_EndMonth.setMaximum(12)
+        self._spinBox_EndMonth.setAlignment(Qt.AlignCenter)
+        self._spinBox_EndMonth.setMaximumWidth(80)
+        self._spinBox_EndMonth.setMinimumHeight(20)
+
+        self._spinBox_EndDay = QSpinBox()
+        self._spinBox_EndDay.setMinimum(1)
+        self._spinBox_EndDay.setMaximum(31)
+        self._spinBox_EndDay.setAlignment(Qt.AlignCenter)
+        self._spinBox_EndDay.setMaximumWidth(80)
+        self._spinBox_EndDay.setMinimumHeight(20)
+
+        self._spinBox_minBandSize = QSpinBox()
+        self._spinBox_minBandSize.setMinimum(0)
+        self._spinBox_minBandSize.setAlignment(Qt.AlignCenter)
+        self._spinBox_minBandSize.setMaximumWidth(80)
+        self._spinBox_minBandSize.setMinimumHeight(20)
+
+        self._spinBox_maxBandSize = QSpinBox()
+        self._spinBox_maxBandSize.setMinimum(0)
+        self._spinBox_maxBandSize.setAlignment(Qt.AlignCenter)
+        self._spinBox_maxBandSize.setMaximumWidth(80)
+        self._spinBox_maxBandSize.setMinimumHeight(20)
+
+        self._spinBox_minImageWidth = QSpinBox()
+        self._spinBox_minImageWidth.setMinimum(0)
+        self._spinBox_minImageWidth.setAlignment(Qt.AlignCenter)
+        self._spinBox_minImageWidth.setMaximumWidth(80)
+        self._spinBox_minImageWidth.setMinimumHeight(20)
+
+        self._spinBox_maxImageWidth = QSpinBox()
+        self._spinBox_maxImageWidth.setMinimum(0)
+        self._spinBox_maxImageWidth.setAlignment(Qt.AlignCenter)
+        self._spinBox_maxImageWidth.setMaximumWidth(80)
+        self._spinBox_maxImageWidth.setMinimumHeight(20)
+
+        self._spinBox_minImageHeight = QSpinBox()
+        self._spinBox_minImageHeight.setMinimum(0)
+        self._spinBox_minImageHeight.setAlignment(Qt.AlignCenter)
+        self._spinBox_minImageHeight.setMaximumWidth(80)
+        self._spinBox_minImageHeight.setMinimumHeight(20)
+
+        self._spinBox_maxImageHeight = QSpinBox()
+        self._spinBox_maxImageHeight.setMinimum(0)
+        self._spinBox_maxImageHeight.setAlignment(Qt.AlignCenter)
+        self._spinBox_maxImageHeight.setMaximumWidth(80)
+        self._spinBox_maxImageHeight.setMinimumHeight(20)
+
+        # -------------------------- #
+        # ----- QDoubleSpinBox ----- #
+        # -------------------------- #
+        self._doubleSpinBox_MinimumLatitude = QDoubleSpinBox()
+        self._doubleSpinBox_MinimumLatitude.setMinimum(-90)
+        self._doubleSpinBox_MinimumLatitude.setMaximum(90)
+        self._doubleSpinBox_MinimumLatitude.setAlignment(Qt.AlignCenter)
+        self._doubleSpinBox_MinimumLatitude.setMaximumWidth(80)
+        self._doubleSpinBox_MinimumLatitude.setMinimumHeight(20)
+
+        self._doubleSpinBox_MinimumLongitude = QDoubleSpinBox()
+        self._doubleSpinBox_MinimumLongitude.setMinimum(-180)
+        self._doubleSpinBox_MinimumLongitude.setMaximum(180)
+        self._doubleSpinBox_MinimumLongitude.setAlignment(Qt.AlignCenter)
+        self._doubleSpinBox_MinimumLongitude.setMaximumWidth(80)
+        self._doubleSpinBox_MinimumLongitude.setMinimumHeight(20)
+
+        self._doubleSpinBox_MaximumLatitude = QDoubleSpinBox()
+        self._doubleSpinBox_MaximumLatitude.setMinimum(-90)
+        self._doubleSpinBox_MaximumLatitude.setMaximum(90)
+        self._doubleSpinBox_MaximumLatitude.setAlignment(Qt.AlignCenter)
+        self._doubleSpinBox_MaximumLatitude.setMaximumWidth(80)
+        self._doubleSpinBox_MaximumLatitude.setMinimumHeight(20)
+
+        self._doubleSpinBox_MaximumLongitude = QDoubleSpinBox()
+        self._doubleSpinBox_MaximumLongitude.setMinimum(-180)
+        self._doubleSpinBox_MaximumLongitude.setMaximum(180)
+        self._doubleSpinBox_MaximumLongitude.setAlignment(Qt.AlignCenter)
+        self._doubleSpinBox_MaximumLongitude.setMaximumWidth(80)
+        self._doubleSpinBox_MaximumLongitude.setMinimumHeight(20)
 
         # ------------------------------ #
         # ----- Set Default Values ----- #
@@ -1392,6 +1509,164 @@ class WidgetFilter(QWidget):
             :return: Nothing
         """
         self.setEvents_()
+
+        # Label
+        label_Type = QLabel('<b>Available Type:<\\b>')
+        label_Crs = QLabel('<b>Available CRS:<\\b>')
+        label_Start_Date = QLabel('<b>Start Date:<\\b>')
+        label_Start_Year = QLabel('Start Year:')
+        label_Start_Month = QLabel('Start Month:')
+        label_Start_Day = QLabel('Start Day:')
+        label_End_Date = QLabel('<b>End Date:<\\b>')
+        label_End_Year = QLabel('End Year:')
+        label_End_Month = QLabel('End Month:')
+        label_End_Day = QLabel('End Day:')
+        label_Minimum_Latitude = QLabel('<b>Minimum Latitude:<\\b>')
+        label_Minimum_Longitude = QLabel('<b>Minimum Longitude:<\\b>')
+        label_Maximum_Latitude = QLabel('<b>Maximum Latitude:<\\b>')
+        label_Maximum_Longitude = QLabel('<b>Maximum Longitude:<\\b>')
+        label_MinBandNum = QLabel('<b>Minimum Bands:<\\b>')
+        label_MaxBandNum = QLabel('<b>Maximum Bands:<\\b>')
+        label_MinWidth = QLabel('<b>Minimum Width:<\\b>')
+        label_MaxWidth = QLabel('<b>Maximum Width:<\\b>')
+        label_MinHeight = QLabel('<b>Minimum Height:<\\b>')
+        label_MaxHeight = QLabel('<b>Maximum Height:<\\b>')
+
+        # Vbox_ListWidget
+        vbox_ListWidget = QVBoxLayout()
+        vbox_ListWidget.addWidget(label_Type)
+        vbox_ListWidget.addWidget(self._listWidget_Type)
+        vbox_ListWidget.addWidget(label_Crs)
+        vbox_ListWidget.addWidget(self._listWidget_Crs)
+
+        # Start Date
+        hbox_StartYear = QHBoxLayout()
+        hbox_StartYear.addWidget(label_Start_Year)
+        hbox_StartYear.addWidget(self._spinBox_StartYear)
+
+        hbox_StartMonth = QHBoxLayout()
+        hbox_StartMonth.addWidget(label_Start_Month)
+        hbox_StartMonth.addWidget(self._spinBox_StartMonth)
+
+        hbox_StartDay = QHBoxLayout()
+        hbox_StartDay.addWidget(label_Start_Day)
+        hbox_StartDay.addWidget(self._spinBox_StartDay)
+
+        vbox_StartDate = QVBoxLayout()
+        vbox_StartDate.addWidget(label_Start_Date)
+        vbox_StartDate.addLayout(hbox_StartYear)
+        vbox_StartDate.addLayout(hbox_StartMonth)
+        vbox_StartDate.addLayout(hbox_StartDay)
+
+        # End Date
+        hbox_EndYear = QHBoxLayout()
+        hbox_EndYear.addWidget(label_End_Year)
+        hbox_EndYear.addWidget(self._spinBox_EndYear)
+
+        hbox_EndMonth = QHBoxLayout()
+        hbox_EndMonth.addWidget(label_End_Month)
+        hbox_EndMonth.addWidget(self._spinBox_EndMonth)
+
+        hbox_EndDay = QHBoxLayout()
+        hbox_EndDay.addWidget(label_End_Day)
+        hbox_EndDay.addWidget(self._spinBox_EndDay)
+
+        vbox_EndDate = QVBoxLayout()
+        vbox_EndDate.addWidget(label_End_Date)
+        vbox_EndDate.addLayout(hbox_EndYear)
+        vbox_EndDate.addLayout(hbox_EndMonth)
+        vbox_EndDate.addLayout(hbox_EndDay)
+
+        # Date
+        hbox_Date = QHBoxLayout()
+        hbox_Date.addLayout(vbox_StartDate)
+        hbox_Date.addLayout(vbox_EndDate)
+
+        # Min Coordinates
+        hbox_MinLatitude = QHBoxLayout()
+        hbox_MinLatitude.addWidget(label_Minimum_Latitude)
+        hbox_MinLatitude.addWidget(self._doubleSpinBox_MinimumLatitude)
+
+        hbox_MinLongitude = QHBoxLayout()
+        hbox_MinLongitude.addWidget(label_Minimum_Longitude)
+        hbox_MinLongitude.addWidget(self._doubleSpinBox_MinimumLongitude)
+
+        vbox_MinCoordinates = QVBoxLayout()
+        vbox_MinCoordinates.addLayout(hbox_MinLatitude)
+        vbox_MinCoordinates.addLayout(hbox_MinLongitude)
+
+        # Max Coordinates
+        hbox_MaxLatitude = QHBoxLayout()
+        hbox_MaxLatitude.addWidget(label_Maximum_Latitude)
+        hbox_MaxLatitude.addWidget(self._doubleSpinBox_MaximumLatitude)
+
+        hbox_MaxLongitude = QHBoxLayout()
+        hbox_MaxLongitude.addWidget(label_Maximum_Longitude)
+        hbox_MaxLongitude.addWidget(self._doubleSpinBox_MaximumLongitude)
+
+        vbox_MaxCoordinates = QVBoxLayout()
+        vbox_MaxCoordinates.addLayout(hbox_MaxLatitude)
+        vbox_MaxCoordinates.addLayout(hbox_MaxLongitude)
+
+        # hbox_Coordinates
+        hbox_Coordinates = QHBoxLayout()
+        hbox_Coordinates.addLayout(vbox_MinCoordinates)
+        hbox_Coordinates.addLayout(vbox_MaxCoordinates)
+
+        # Min Image Size
+        hbox_MinBand = QHBoxLayout()
+        hbox_MinBand.addWidget(label_MinBandNum)
+        hbox_MinBand.addWidget(self._spinBox_minBandSize)
+
+        hbox_MinWidth = QHBoxLayout()
+        hbox_MinWidth.addWidget(label_MinWidth)
+        hbox_MinWidth.addWidget(self._spinBox_minImageWidth)
+
+        hbox_MinHeight = QHBoxLayout()
+        hbox_MinHeight.addWidget(label_MinHeight)
+        hbox_MinHeight.addWidget(self._spinBox_minImageHeight)
+
+        vbox_MinImageSize = QVBoxLayout()
+        vbox_MinImageSize.addLayout(hbox_MinBand)
+        vbox_MinImageSize.addLayout(hbox_MinWidth)
+        vbox_MinImageSize.addLayout(hbox_MinHeight)
+
+        # Max Image Size
+        hbox_MaxBand = QHBoxLayout()
+        hbox_MaxBand.addWidget(label_MaxBandNum)
+        hbox_MaxBand.addWidget(self._spinBox_maxBandSize)
+
+        hbox_MaxWidth = QHBoxLayout()
+        hbox_MaxWidth.addWidget(label_MaxWidth)
+        hbox_MaxWidth.addWidget(self._spinBox_maxImageWidth)
+
+        hbox_MaxHeight = QHBoxLayout()
+        hbox_MaxHeight.addWidget(label_MaxHeight)
+        hbox_MaxHeight.addWidget(self._spinBox_maxImageHeight)
+
+        vbox_MaxImageSize = QVBoxLayout()
+        vbox_MaxImageSize.addLayout(hbox_MaxBand)
+        vbox_MaxImageSize.addLayout(hbox_MaxWidth)
+        vbox_MaxImageSize.addLayout(hbox_MaxHeight)
+
+        # hbox Image Size
+        hbox_ImageSize = QHBoxLayout()
+        hbox_ImageSize.addLayout(vbox_MinImageSize)
+        hbox_ImageSize.addLayout(vbox_MaxImageSize)
+
+        # vbox_Final
+        vbox_Final = QVBoxLayout()
+        vbox_Final.addLayout(hbox_Date)
+        vbox_Final.addLayout(hbox_Coordinates)
+        vbox_Final.addLayout(hbox_ImageSize)
+        vbox_Final.addSpacerItem(QSpacerItem(0, projFlags.INT_MAX_STRETCH))
+
+        # Final HBox Layout
+        hbox_Final = QHBoxLayout()
+        hbox_Final.addLayout(vbox_ListWidget)
+        hbox_Final.addLayout(vbox_Final)
+
+        self.vbox_main_layout.addLayout(hbox_Final)
 
     def setEvents_(self):
         pass
