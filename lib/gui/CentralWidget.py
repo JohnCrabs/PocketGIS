@@ -20,7 +20,8 @@ from PySide2.QtWidgets import (
     QDoubleSpinBox,
     QListWidget,
     QListWidgetItem,
-    QCheckBox
+    QCheckBox,
+    QTextEdit
 )
 from PySide2.QtGui import (
     QIcon
@@ -149,6 +150,7 @@ class WidgetCentral(QWidget):
     def setButtonRefreshListImage_Visualizing(self):
         self.tabStorageImageVisualizing.setStoragePath(self.tabWidgetGeneral.getCurrentStoragePath())
         self.tabStorageImageVisualizing.setImageCollectionJSON()
+        self.tabStorageImageVisualizing.setGeoDatabaseProcessing()
 
 
 class WidgetTabGeneral(QWidget):
@@ -937,6 +939,7 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
                 self._ProcessesJSON[_key_][self._DKEY_SELECTED_PROCESSES].remove(item.text())
 
     def setButtonExecute(self):
+        processOnlyNewFiles = self._checkbox_ProcessOnlyUnprocessed.checkState().__bool__()
         for _key_ in self._ProcessesJSON.keys():
             _pkey_eval_ = self._ProcessesJSON[_key_][self._DKEY_PKEY_4_EVALUATION_DICT]
             _imageCollection = self._geoProcessing.getImageCollectionJSON()
@@ -959,8 +962,12 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
                         ) + file_manip.pathFileSuffix(full_path)
 
                         o_full_path = file_manip.normPath(full_path + '/..') + newFileName
-
-                        evalScript.CONST_EVALUATION_DICTIONARY[_pkey_eval_][evalScript.SKEY_AVAILABLE_PROCESSES][_process_](full_path, o_full_path, _pkey_eval_)
+                        if processOnlyNewFiles:
+                            if newFileName not in self._ImageCollectionJSON[_key_].keys():
+                                evalScript.CONST_EVALUATION_DICTIONARY[_pkey_eval_][
+                                    evalScript.SKEY_AVAILABLE_PROCESSES][_process_](full_path, o_full_path, _pkey_eval_)
+                        else:
+                            evalScript.CONST_EVALUATION_DICTIONARY[_pkey_eval_][evalScript.SKEY_AVAILABLE_PROCESSES][_process_](full_path, o_full_path, _pkey_eval_)
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
@@ -981,13 +988,23 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # ----------------------- #
         self.button_RefreshList = QPushButton('Refresh List')
 
-        # -------------------- #
-        # ----- QSpinBox ----- #
-        # -------------------- #
+        # ----------------------- #
+        # ----- QListWidget ----- #
+        # ----------------------- #
+        self._listWidget_Dir = QListWidget()
+        # self._listWidget_Dir.setMaximumWidth(250)
 
-        # -------------------------- #
-        # ----- QDoubleSpinBox ----- #
-        # -------------------------- #
+        self._listWidget_FileList = QListWidget()
+        # self._listWidget_FileList.setMaximumWidth(250)
+
+        # -------------------- #
+        # ----- QTextEdit----- #
+        # -------------------- #
+        self._textEdit_Metadata = QTextEdit()
+        self._textEdit_Metadata.setEnabled(False)
+        self._textEdit_Metadata.setText(self.setAndGetMetadata())
+        self._textEdit_Metadata.setMinimumWidth(250)
+        self._textEdit_Metadata.setMaximumWidth(250)
 
         # --------------------- #
         # ----- QLineEdit ----- #
@@ -1000,9 +1017,14 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # ------------------------- #
         # ----- Set Variables ----- #
         # ------------------------- #
+        self._DKEY_PKEY_4_EVALUATION_DICT = 'pkey-for-evaluation-dict'
+        self._DKEY_DIR_ITEM = 'directory-item'
+        self._DKEY_DIR_FILES = 'directory-files'
+
         self._storagePath = None
         self._geoProcessing = geoProc.GeotiffProcessing()
         self._ImageCollectionJSON = {}
+        self._DirFilesJSON = {}
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -1015,10 +1037,33 @@ class WidgetTabStorageImageVisualizing(QWidget):
         self.restoreDefaultValues()
         self.setEvents_()
 
+        # Labels
+        label_DirList = QLabel('<b>Geo-Database Directories:<\\b>')
+        label_FileList = QLabel('<b>Available Files:<\\b>')
+        label_Metadata = QLabel('<b>Metadata:<\\b>')
+
+        # ListWidget
+        vbox_ListWidget = QVBoxLayout()
+        vbox_ListWidget.addWidget(label_DirList)
+        vbox_ListWidget.addWidget(self._listWidget_Dir)
+        vbox_ListWidget.addWidget(label_FileList)
+        vbox_ListWidget.addWidget(self._listWidget_FileList)
+
+        # vbox Metadata
+        vbox_Metadata = QVBoxLayout()
+        vbox_Metadata.addWidget(label_Metadata)
+        vbox_Metadata.addWidget(self._textEdit_Metadata)
+
+        # HBox_Final
+        hbox_Final = QHBoxLayout()
+        hbox_Final.addLayout(vbox_ListWidget)
+        hbox_Final.addLayout(vbox_Metadata)
+
         # Buttons
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_RefreshList)
 
+        self.vbox_main_layout.addLayout(hbox_Final)
         self.vbox_main_layout.addLayout(hbox_Buttons)
 
     def restoreDefaultValues(self):
@@ -1026,7 +1071,8 @@ class WidgetTabStorageImageVisualizing(QWidget):
         pass
 
     def setEvents_(self):
-        pass
+        self._listWidget_Dir.currentRowChanged.connect(self.setFileListWidget)
+        self._listWidget_FileList.currentRowChanged.connect(self.setFileListCurrentRowChange)
 
     def setStoragePath(self, path):
         self._storagePath = path
@@ -1038,6 +1084,59 @@ class WidgetTabStorageImageVisualizing(QWidget):
 
     def setGeoProcessing(self):
         pass
+
+    def setGeoDatabaseProcessing(self):
+        self._listWidget_Dir.clear()
+        for _key_ in self._ImageCollectionJSON.keys():
+            dirWidgetItem = QListWidgetItem(_key_)
+            self._listWidget_Dir.addItem(dirWidgetItem)
+            self._DirFilesJSON[_key_] = {
+                self._DKEY_PKEY_4_EVALUATION_DICT: '',
+                self._DKEY_DIR_ITEM: dirWidgetItem,
+                self._DKEY_DIR_FILES: []
+
+            }
+            for _sat_key_ in evalScript.CONST_EVALUATION_DICTIONARY.keys():
+                if _key_ == evalScript.CONST_EVALUATION_DICTIONARY[_sat_key_][evalScript.SKEY_PATH_NAME]:
+                    self._DirFilesJSON[_key_][self._DKEY_PKEY_4_EVALUATION_DICT] = _sat_key_
+            for _file_ in self._ImageCollectionJSON[_key_].keys():
+                fileWidgetItem = QListWidgetItem(_file_)
+                self._DirFilesJSON[_key_][self._DKEY_DIR_FILES].append(fileWidgetItem)
+
+        self._listWidget_Dir.setCurrentRow(0)
+
+    def setFileListWidget(self, row):
+        _key_ = self._listWidget_Dir.item(row).text()
+        item_count = self._listWidget_FileList.count()
+        for _ in range(0, item_count):
+            self._listWidget_FileList.takeItem(0)
+        for _process_ in self._DirFilesJSON[_key_][self._DKEY_DIR_FILES]:
+            self._listWidget_FileList.addItem(_process_)
+
+    def setFileListCurrentRowChange(self, row):
+        _dir_key_ = self._listWidget_Dir.currentItem().text()
+        _file_key_ = self._listWidget_FileList.item(row).text()
+
+    @staticmethod
+    def setAndGetMetadata(satelliteName='', imageType='',
+                          startDate='', endDate='', crs='',
+                          minLat='', minLon='', maxLat='', maxLon='',
+                          imgWidth='', imgHeight='', imgBands=''):
+        newLine = '<br>'
+        o_str = f"<b>Satellite: <\\b> {satelliteName}{newLine}" \
+                f"<b>Type: <\\b> {imageType}{newLine}" \
+                f"<b>Start Date: <\\b> {startDate}{newLine}" \
+                f"<b>End Date: <\\b> {endDate}{newLine}" \
+                f"<b>CRS: <\\b> {crs}{newLine}" \
+                f"<b>Min Latitude: <\\b> {minLat}{newLine}" \
+                f"<b>Min Longitude: <\\b> {minLon}{newLine}" \
+                f"<b>Max Latitude: <\\b> {maxLat}{newLine}" \
+                f"<b>Max Longitude: <\\b> {maxLon}{newLine}" \
+                f"<b>Width: <\\b> {imgWidth}{newLine}" \
+                f"<b>Height: <\\b> {imgHeight}{newLine}" \
+                f"<b>Bands: <\\b> {imgBands}"
+
+        return o_str
 
     # ------------------------------ #
     # ----- GET DEFAULT VALUES ----- #
