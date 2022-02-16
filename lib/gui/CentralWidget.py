@@ -1103,7 +1103,8 @@ class WidgetTabStorageImageVisualizing(QWidget):
                 fileWidgetItem = QListWidgetItem(_file_)
                 self._DirFilesJSON[_key_][self._DKEY_DIR_FILES].append(fileWidgetItem)
 
-        self._listWidget_Dir.setCurrentRow(0)
+        if self._listWidget_Dir.count() > 0:
+            self._listWidget_Dir.setCurrentRow(0)
 
     def setFileListWidget(self, row):
         _key_ = self._listWidget_Dir.item(row).text()
@@ -1113,9 +1114,29 @@ class WidgetTabStorageImageVisualizing(QWidget):
         for _process_ in self._DirFilesJSON[_key_][self._DKEY_DIR_FILES]:
             self._listWidget_FileList.addItem(_process_)
 
+        if self._listWidget_FileList.count() > 0:
+            self._listWidget_FileList.setCurrentRow(0)
+
     def setFileListCurrentRowChange(self, row):
         _dir_key_ = self._listWidget_Dir.currentItem().text()
         _file_key_ = self._listWidget_FileList.item(row).text()
+
+        key_metadata = 'metadata'
+        metadata = self.setAndGetMetadata(
+            satelliteName=self._DirFilesJSON[_dir_key_][self._DKEY_PKEY_4_EVALUATION_DICT],
+            imageType=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['data-type'],
+            startDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-start'],
+            endDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-end'],
+            crs=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['crs'],
+            minLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-min'],
+            minLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-min'],
+            maxLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-max'],
+            maxLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-max'],
+            imgWidth=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['width'],
+            imgHeight=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['height'],
+            imgBands=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['bands'])
+
+        self._textEdit_Metadata.setText(metadata)
 
     @staticmethod
     def setAndGetMetadata(satelliteName='', imageType='',
@@ -1123,18 +1144,18 @@ class WidgetTabStorageImageVisualizing(QWidget):
                           minLat='', minLon='', maxLat='', maxLon='',
                           imgWidth='', imgHeight='', imgBands=''):
         newLine = '<br>'
-        o_str = f"<b>Satellite: <\\b> {satelliteName}{newLine}" \
-                f"<b>Type: <\\b> {imageType}{newLine}" \
-                f"<b>Start Date: <\\b> {startDate}{newLine}" \
-                f"<b>End Date: <\\b> {endDate}{newLine}" \
-                f"<b>CRS: <\\b> {crs}{newLine}" \
-                f"<b>Min Latitude: <\\b> {minLat}{newLine}" \
-                f"<b>Min Longitude: <\\b> {minLon}{newLine}" \
-                f"<b>Max Latitude: <\\b> {maxLat}{newLine}" \
-                f"<b>Max Longitude: <\\b> {maxLon}{newLine}" \
-                f"<b>Width: <\\b> {imgWidth}{newLine}" \
-                f"<b>Height: <\\b> {imgHeight}{newLine}" \
-                f"<b>Bands: <\\b> {imgBands}"
+        o_str = f"<span style=\"color:black\"><b>Satellite: <\\b></span> <span style=\"color:green\"><b>{satelliteName}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Type: <\\b></span> <span style=\"color:green\"><b>{imageType}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Start Date: <\\b></span> <span style=\"color:green\"><b>{startDate}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>End Date: <\\b></span> <span style=\"color:green\"><b>{endDate}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>CRS: <\\b></span> <span style=\"color:green\"><b>{crs}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Min Latitude: <\\b></span> <span style=\"color:green\"><b>{minLat}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Min Longitude: <\\b></span> <span style=\"color:green\"><b>{minLon}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Max Latitude: <\\b></span> <span style=\"color:green\"><b>{maxLat}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Max Longitude: <\\b></span> <span style=\"color:green\"><b>{maxLon}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Width: <\\b></span> <span style=\"color:green\"><b>{imgWidth}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Height: <\\b></span> <span style=\"color:green\"><b>{imgHeight}<\\b></span>{newLine}" \
+                f"<span style=\"color:black\"><b>Bands: <\\b></span> <span style=\"color:green\"><b>{imgBands}<\\b></span>"
 
         return o_str
 
