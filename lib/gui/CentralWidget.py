@@ -984,12 +984,24 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # ---------------------- #
         self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
 
+        self._Widget_Filter = WidgetFilter(
+            w=512, h=512,
+            minW=256, minH=256,
+            maxW=512, maxH=512,
+            winTitle='Set Filter', iconPath='')
+
+        self._Widget_ShowImage = WidgetShowImage(
+            w=512, h=512,
+            minW=256, minH=256,
+            maxW=512, maxH=512,
+            winTitle='Show Image', iconPath='')
+
         # ----------------------- #
         # ----- QPushButton ----- #
         # ----------------------- #
         self.button_RefreshList = QPushButton('Refresh List')
-        self.button_SetFilter = QPushButton('Set Filter')
-        self.button_ShowImage = QPushButton('Show Image')
+        self._button_SetFilter = QPushButton('Set Filter')
+        self._button_ShowImage = QPushButton('Show Image')
 
         # ----------------------- #
         # ----- QListWidget ----- #
@@ -1008,14 +1020,6 @@ class WidgetTabStorageImageVisualizing(QWidget):
         self._textEdit_Metadata.setText(self.setAndGetMetadata())
         self._textEdit_Metadata.setMinimumWidth(250)
         self._textEdit_Metadata.setMaximumWidth(250)
-
-        # --------------------- #
-        # ----- QLineEdit ----- #
-        # --------------------- #
-
-        # --------------------- #
-        # ----- QComboBox ----- #
-        # --------------------- #
 
         # ------------------------- #
         # ----- Set Variables ----- #
@@ -1039,6 +1043,9 @@ class WidgetTabStorageImageVisualizing(QWidget):
         """
         self.restoreDefaultValues()
         self.setEvents_()
+
+        self._Widget_Filter.setWidget()
+        self._Widget_ShowImage.setWidget()
 
         # Labels
         label_DirList = QLabel('<b>Geo-Database Directories:<\\b>')
@@ -1065,8 +1072,8 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # Buttons
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_RefreshList)
-        hbox_Buttons.addWidget(self.button_SetFilter)
-        hbox_Buttons.addWidget(self.button_ShowImage)
+        hbox_Buttons.addWidget(self._button_SetFilter)
+        hbox_Buttons.addWidget(self._button_ShowImage)
 
         self.vbox_main_layout.addLayout(hbox_Final)
         self.vbox_main_layout.addLayout(hbox_Buttons)
@@ -1078,6 +1085,9 @@ class WidgetTabStorageImageVisualizing(QWidget):
     def setEvents_(self):
         self._listWidget_Dir.currentRowChanged.connect(self.setFileListWidget)
         self._listWidget_FileList.currentRowChanged.connect(self.setFileListCurrentRowChange)
+
+        self._button_SetFilter.clicked.connect(self.setButtonFilterClicked)
+        self._button_ShowImage.clicked.connect(self.setButtonShowImage)
 
     def setStoragePath(self, path):
         self._storagePath = path
@@ -1144,6 +1154,12 @@ class WidgetTabStorageImageVisualizing(QWidget):
 
         else:
             self._textEdit_Metadata.setText(self.setAndGetMetadata())
+
+    def setButtonFilterClicked(self):
+        self._Widget_Filter.show()
+
+    def setButtonShowImage(self):
+        self._Widget_ShowImage.show()
 
     @staticmethod
     def setAndGetMetadata(satelliteName='', imageType='',
@@ -1330,6 +1346,104 @@ class WidgetConfig(QWidget):
 
     def getCredentials(self):
         return self._Instance_ID, self._Client_ID, self._Client_Secret
+
+
+class WidgetFilter(QWidget):
+    def __init__(self, w=512, h=512, minW=256, minH=256, maxW=512, maxH=512,
+                 winTitle='My Window', iconPath=''):
+        super().__init__()
+        # ---------------------- #
+        # ----- Set Window ----- #
+        # ---------------------- #
+        self.setWindowTitle(winTitle)  # Set Window Title
+        self.setWindowIcon(QIcon(iconPath))  # Set Window Icon
+        self.setGeometry(_INT_SCREEN_WIDTH / 4, _INT_SCREEN_HEIGHT / 4, w, h)  # Set Window Geometry
+        self.setMinimumWidth(minW)  # Set Window Minimum Width
+        self.setMinimumHeight(minH)  # Set Window Minimum Height
+        if maxW is not None:
+            self.setMaximumWidth(maxW)  # Set Window Maximum Width
+        if maxH is not None:
+            self.setMaximumHeight(maxH)  # Set Window Maximum Width
+
+        self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
+
+        # ------------------------- #
+        # ----- Set Variables ----- #
+        # ------------------------- #
+
+        # ----------------------- #
+        # ----- QPushButton ----- #
+        # ----------------------- #
+
+        # --------------------- #
+        # ----- QLineEdit ----- #
+        # --------------------- #
+
+        # ------------------------------ #
+        # ----- Set Default Values ----- #
+        # ------------------------------ #
+
+    # --------------------------- #
+    # ----- Reuse Functions ----- #
+    # --------------------------- #
+    def setWidget(self):
+        """
+            A function to create the widget components into the main QWidget
+            :return: Nothing
+        """
+        self.setEvents_()
+
+    def setEvents_(self):
+        pass
+
+
+class WidgetShowImage(QWidget):
+    def __init__(self, w=512, h=512, minW=256, minH=256, maxW=512, maxH=512,
+                 winTitle='My Window', iconPath=''):
+        super().__init__()
+        # ---------------------- #
+        # ----- Set Window ----- #
+        # ---------------------- #
+        self.setWindowTitle(winTitle)  # Set Window Title
+        self.setWindowIcon(QIcon(iconPath))  # Set Window Icon
+        self.setGeometry(_INT_SCREEN_WIDTH / 4, _INT_SCREEN_HEIGHT / 4, w, h)  # Set Window Geometry
+        self.setMinimumWidth(minW)  # Set Window Minimum Width
+        self.setMinimumHeight(minH)  # Set Window Minimum Height
+        if maxW is not None:
+            self.setMaximumWidth(maxW)  # Set Window Maximum Width
+        if maxH is not None:
+            self.setMaximumHeight(maxH)  # Set Window Maximum Width
+
+        self.vbox_main_layout = QVBoxLayout(self)  # Create the main vbox
+
+        # ------------------------- #
+        # ----- Set Variables ----- #
+        # ------------------------- #
+
+        # ----------------------- #
+        # ----- QPushButton ----- #
+        # ----------------------- #
+
+        # --------------------- #
+        # ----- QLineEdit ----- #
+        # --------------------- #
+
+        # ------------------------------ #
+        # ----- Set Default Values ----- #
+        # ------------------------------ #
+
+    # --------------------------- #
+    # ----- Reuse Functions ----- #
+    # --------------------------- #
+    def setWidget(self):
+        """
+            A function to create the widget components into the main QWidget
+            :return: Nothing
+        """
+        self.setEvents_()
+
+    def setEvents_(self):
+        pass
 
 
 # ******************************************************* #
