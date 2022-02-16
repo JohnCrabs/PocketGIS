@@ -20,6 +20,7 @@ from PySide2.QtWidgets import (
     QDoubleSpinBox,
     QListWidget,
     QListWidgetItem,
+    QCheckBox
 )
 from PySide2.QtGui import (
     QIcon
@@ -830,6 +831,11 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         self._listWidget_Dir = QListWidget()
         self._listWidget_AvailableProcesses = QListWidget()
 
+        # --------------------- #
+        # ----- QCheckBox ----- #
+        # --------------------- #
+        self._checkbox_ProcessOnlyUnprocessed = QCheckBox('Process only new files.')
+
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
@@ -874,6 +880,7 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         hbox_Buttons.addWidget(self.button_Execute)
 
         self.vbox_main_layout.addLayout(vbox_ListWidgets)
+        self.vbox_main_layout.addWidget(self._checkbox_ProcessOnlyUnprocessed)
         self.vbox_main_layout.addLayout(hbox_Buttons)
 
     def setEvents_(self):

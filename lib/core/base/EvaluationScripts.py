@@ -234,6 +234,7 @@ def _process_calculate_and_export_NDVI(in_path, out_path, satellite_name):
 
     return True
 
+
 # =========================== #
 # ===== Main Dictionary ===== #
 # =========================== #
