@@ -922,12 +922,13 @@ class WidgetTabStorageImageBackendProcessing(QWidget):
         self._listWidget_Dir.setCurrentRow(0)
 
     def setProcessListWidget(self, row):
-        _key_ = self._listWidget_Dir.item(row).text()
-        item_count = self._listWidget_AvailableProcesses.count()
-        for _ in range(0, item_count):
-            self._listWidget_AvailableProcesses.takeItem(0)
-        for _process_ in self._ProcessesJSON[_key_][self._DKEY_PROCESS_ITEM]:
-            self._listWidget_AvailableProcesses.addItem(_process_)
+        if self._listWidget_Dir.item(row):
+            _key_ = self._listWidget_Dir.item(row).text()
+            item_count = self._listWidget_AvailableProcesses.count()
+            for _ in range(0, item_count):
+                self._listWidget_AvailableProcesses.takeItem(0)
+            for _process_ in self._ProcessesJSON[_key_][self._DKEY_PROCESS_ITEM]:
+                self._listWidget_AvailableProcesses.addItem(_process_)
 
     def setProcessListItemChanged(self, item):
         _key_ = self._listWidget_Dir.currentItem().text()
@@ -987,6 +988,8 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # ----- QPushButton ----- #
         # ----------------------- #
         self.button_RefreshList = QPushButton('Refresh List')
+        self.button_SetFilter = QPushButton('Set Filter')
+        self.button_ShowImage = QPushButton('Show Image')
 
         # ----------------------- #
         # ----- QListWidget ----- #
@@ -1062,6 +1065,8 @@ class WidgetTabStorageImageVisualizing(QWidget):
         # Buttons
         hbox_Buttons = QHBoxLayout()
         hbox_Buttons.addWidget(self.button_RefreshList)
+        hbox_Buttons.addWidget(self.button_SetFilter)
+        hbox_Buttons.addWidget(self.button_ShowImage)
 
         self.vbox_main_layout.addLayout(hbox_Final)
         self.vbox_main_layout.addLayout(hbox_Buttons)
@@ -1081,9 +1086,6 @@ class WidgetTabStorageImageVisualizing(QWidget):
     def setImageCollectionJSON(self):
         self._geoProcessing.createImageCollectionJSON()
         self._ImageCollectionJSON = self._geoProcessing.getImageCollectionJSON()
-
-    def setGeoProcessing(self):
-        pass
 
     def setGeoDatabaseProcessing(self):
         self._listWidget_Dir.clear()
@@ -1107,36 +1109,41 @@ class WidgetTabStorageImageVisualizing(QWidget):
             self._listWidget_Dir.setCurrentRow(0)
 
     def setFileListWidget(self, row):
-        _key_ = self._listWidget_Dir.item(row).text()
-        item_count = self._listWidget_FileList.count()
-        for _ in range(0, item_count):
-            self._listWidget_FileList.takeItem(0)
-        for _process_ in self._DirFilesJSON[_key_][self._DKEY_DIR_FILES]:
-            self._listWidget_FileList.addItem(_process_)
+        if self._listWidget_Dir.item(row):
+            _key_ = self._listWidget_Dir.item(row).text()
+            item_count = self._listWidget_FileList.count()
+            for _ in range(0, item_count):
+                self._listWidget_FileList.takeItem(0)
+            for _process_ in self._DirFilesJSON[_key_][self._DKEY_DIR_FILES]:
+                self._listWidget_FileList.addItem(_process_)
 
-        if self._listWidget_FileList.count() > 0:
-            self._listWidget_FileList.setCurrentRow(0)
+            if self._listWidget_FileList.count() > 0:
+                self._listWidget_FileList.setCurrentRow(0)
 
     def setFileListCurrentRowChange(self, row):
-        _dir_key_ = self._listWidget_Dir.currentItem().text()
-        _file_key_ = self._listWidget_FileList.item(row).text()
+        if self._listWidget_Dir.currentItem() and self._listWidget_FileList.item(row):
+            _dir_key_ = self._listWidget_Dir.currentItem().text()
+            _file_key_ = self._listWidget_FileList.item(row).text()
 
-        key_metadata = 'metadata'
-        metadata = self.setAndGetMetadata(
-            satelliteName=self._DirFilesJSON[_dir_key_][self._DKEY_PKEY_4_EVALUATION_DICT],
-            imageType=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['data-type'],
-            startDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-start'],
-            endDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-end'],
-            crs=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['crs'],
-            minLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-min'],
-            minLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-min'],
-            maxLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-max'],
-            maxLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-max'],
-            imgWidth=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['width'],
-            imgHeight=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['height'],
-            imgBands=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['bands'])
+            key_metadata = 'metadata'
+            metadata = self.setAndGetMetadata(
+                satelliteName=self._DirFilesJSON[_dir_key_][self._DKEY_PKEY_4_EVALUATION_DICT],
+                imageType=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['data-type'],
+                startDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-start'],
+                endDate=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['date-end'],
+                crs=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['crs'],
+                minLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-min'],
+                minLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-min'],
+                maxLat=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['latitude-max'],
+                maxLon=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['longitude-max'],
+                imgWidth=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['width'],
+                imgHeight=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['height'],
+                imgBands=self._ImageCollectionJSON[_dir_key_][_file_key_][key_metadata]['bands'])
 
-        self._textEdit_Metadata.setText(metadata)
+            self._textEdit_Metadata.setText(metadata)
+
+        else:
+            self._textEdit_Metadata.setText(self.setAndGetMetadata())
 
     @staticmethod
     def setAndGetMetadata(satelliteName='', imageType='',
