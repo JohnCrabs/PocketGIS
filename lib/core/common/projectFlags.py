@@ -28,9 +28,9 @@ FLOAT_MAX_LATITUDE_DEFAULT = 38.10
 FLOAT_MAX_LONGITUDE_DEFAULT = 23.80
 
 DICT_SATELLITE = {
-    evalScript.S02_L1C_STAMP: evalScript.S02_L1C_BAND_LIST,
-    evalScript.S05P_STAMP: evalScript.S05_BAND_LIST,
-    evalScript.LAN08OLIL1_STAMP: evalScript.LAN08_OLI_L1_BAND_LIST
+    # evalScript.S02_L1C_STAMP: evalScript.S02_L1C_BAND_LIST,
+    # evalScript.S05P_STAMP: evalScript.S05_BAND_LIST,
+    # evalScript.LAN08OLIL1_STAMP: evalScript.LAN08_OLI_L1_BAND_LIST
 }
 
 INT_MAX_STRETCH = 100000  # Spacer Max Stretch
