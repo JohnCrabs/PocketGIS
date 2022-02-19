@@ -9,11 +9,8 @@ TEST_IMG_NDVI_SHOW = MAIN_PATH + '\\S02L1C\\S02L1C_B1_NDVI_S20210101E20210108_WG
 
 def viewIMG(imgPath):
     img = rasterio.open(imgPath).read(1)
-    ep.plot_bands(img, cmap="RdYlGn", cols=1, vmin=-1, vmax=1)
+    ep.plot_bands(img, title=file_manip.pathFileName(TEST_IMG_NDVI_SHOW), cmap="RdYlGn", cols=1, vmin=-1, vmax=1)
 
 
 if __name__ == "__main__":
-    # dc = MyDatacube()
-    # dc.createCube(MAIN_PATH)
-    # dc.calculateNDVI_fromRAW()
     viewIMG(TEST_IMG_NDVI_SHOW)

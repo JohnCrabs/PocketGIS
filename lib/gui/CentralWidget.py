@@ -1499,6 +1499,24 @@ class WidgetFilter(QWidget):
         # ------------------------------ #
         # ----- Set Default Values ----- #
         # ------------------------------ #
+        self._DEFAULT_START_YEAR = 1990
+        self._DEFAULT_START_MONTH = 1
+        self._DEFAULT_START_DAY = 1
+        self._DEFAULT_END_YEAR = projFlags.INT_END_YEAR_DEFAULT
+        self._DEFAULT_END_MONTH = projFlags.INT_END_MONTH_DEFAULT
+        self._DEFAULT_END_DAY = projFlags.INT_END_DAY_DEFAULT
+
+        self._DEFAULT_MIN_LATITUDE = -90
+        self._DEFAULT_MIN_LONGITUDE = -180
+        self._DEFAULT_MAX_LATITUDE = 90
+        self._DEFAULT_MAX_LONGITUDE = 180
+
+        self._DEFAULT_MIN_BANDS = 0
+        self._DEFAULT_MAX_BANDS = 0
+        self._DEFAULT_MIN_WIDTH = 0
+        self._DEFAULT_MAX_WIDTH = 0
+        self._DEFAULT_MIN_HEIGHT = 0
+        self._DEFAULT_MAX_HEIGHT = 0
 
     # --------------------------- #
     # ----- Reuse Functions ----- #
@@ -1509,6 +1527,7 @@ class WidgetFilter(QWidget):
             :return: Nothing
         """
         self.setEvents_()
+        self.restoreDefaultValues()
 
         # Label
         label_Type = QLabel('<b>Available Type:<\\b>')
@@ -1670,6 +1689,76 @@ class WidgetFilter(QWidget):
 
     def setEvents_(self):
         pass
+
+    def restoreDefaultValues(self):
+        # set default value
+        self._spinBox_StartYear.setValue(self.getDefaultStartYear())
+        self._spinBox_StartMonth.setValue(self.getDefaultStartMonth())
+        self._spinBox_StartDay.setValue(self.getDefaultStartDay())
+        self._spinBox_EndYear.setValue(self.getDefaultEndYear())
+        self._spinBox_EndMonth.setValue(self.getDefaultEndMonth())
+        self._spinBox_EndDay.setValue(self.getDefaultEndDay())
+        self._doubleSpinBox_MinimumLatitude.setValue(self.getDefaultMinLatitude())
+        self._doubleSpinBox_MinimumLongitude.setValue(self.getDefaultMinLongitude())
+        self._doubleSpinBox_MaximumLatitude.setValue(self.getDefaultMaxLatitude())
+        self._doubleSpinBox_MaximumLongitude.setValue(self.getDefaultMaxLongitude())
+        self._spinBox_minBandSize.setValue(self.getDefaultMinBands())
+        self._spinBox_maxBandSize.setValue(self.getDefaultMaxBands())
+        self._spinBox_minImageWidth.setValue(self.getDefaultMinWidth())
+        self._spinBox_maxImageWidth.setValue(self.getDefaultMaxWidth())
+        self._spinBox_minImageHeight.setValue(self.getDefaultMinHeight())
+        self._spinBox_maxImageHeight.setValue(self.getDefaultMaxHeight())
+
+    # ------------------------------ #
+    # ----- GET DEFAULT VALUES ----- #
+    # ------------------------------ #
+    def getDefaultStartYear(self):
+        return self._DEFAULT_START_YEAR
+
+    def getDefaultStartMonth(self):
+        return self._DEFAULT_START_MONTH
+
+    def getDefaultStartDay(self):
+        return self._DEFAULT_START_DAY
+
+    def getDefaultEndYear(self):
+        return self._DEFAULT_END_YEAR
+
+    def getDefaultEndMonth(self):
+        return self._DEFAULT_END_MONTH
+
+    def getDefaultEndDay(self):
+        return self._DEFAULT_END_DAY
+
+    def getDefaultMinLatitude(self):
+        return self._DEFAULT_MIN_LATITUDE
+
+    def getDefaultMinLongitude(self):
+        return self._DEFAULT_MIN_LONGITUDE
+
+    def getDefaultMaxLatitude(self):
+        return self._DEFAULT_MAX_LATITUDE
+
+    def getDefaultMaxLongitude(self):
+        return self._DEFAULT_MAX_LONGITUDE
+
+    def getDefaultMinBands(self):
+        return self._DEFAULT_MIN_BANDS
+
+    def getDefaultMaxBands(self):
+        return self._DEFAULT_MAX_BANDS
+
+    def getDefaultMinWidth(self):
+        return self._DEFAULT_MIN_WIDTH
+
+    def getDefaultMaxWidth(self):
+        return self._DEFAULT_MAX_WIDTH
+
+    def getDefaultMinHeight(self):
+        return self._DEFAULT_MAX_HEIGHT
+
+    def getDefaultMaxHeight(self):
+        return self._DEFAULT_MAX_HEIGHT
 
 
 class WidgetShowImage(QWidget):
